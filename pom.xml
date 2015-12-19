@@ -122,7 +122,7 @@
 					<repositoryName>share/repository</repositoryName>
 					<programs>
 						<program>
-							<mainClass>de.citec.csra.highlight.LightService</mainClass>
+							<mainClass>de.citec.csra.highlight.HighlightService</mainClass>
 							<id>csra-highlight-service</id>
 							<platforms>
 								<platform>unix</platform>
