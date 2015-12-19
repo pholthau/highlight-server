@@ -18,9 +18,22 @@ public class SpotAction extends RemoteTask<String, String> {
 
 	public SpotAction(Target tgt, long duration, long init, long wait) throws InitializeException {
 		super("/beamer/spotlight", String.class, String.class);
-		String payload = tgt.name() + ":" + duration;
+		String payload = null;
+		switch (tgt) {
+			case Flobi:
+				payload = "120:60:" + duration;
+				break;
+			case TV:
+				payload = "120:60:" + duration;
+				break;
+			case Meka:
+				payload = "120:60:" + duration;
+				break;
+			case Zen:
+				payload = "120:60:" + duration;
+				break;
+		}
 		configure(payload, init, wait);
 	}
 
 }
-
