@@ -5,7 +5,6 @@
  */
 package de.citec.csra.highlight;
 
-import de.citec.csra.util.UnitParser;
 import de.citec.csra.highlight.action.GazeAction;
 import de.citec.csra.highlight.action.GestureAction;
 import de.citec.csra.highlight.action.LightAction;
@@ -14,6 +13,7 @@ import de.citec.csra.highlight.action.SpotAction;
 import de.citec.csra.task.srv.TaskHandler;
 import de.citec.csra.util.EnumParser;
 import de.citec.csra.util.ScopeParser;
+import de.citec.csra.util.UnitParser;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -76,7 +76,6 @@ public class Highlighter extends TaskHandler<HighlightTarget> {
 		try {
 			Set<Future<State>> futures = new HashSet<>();
 			boolean success = true;
-			System.out.println(this.actions);
 			for (Callable<State> act : this.actions) {
 				futures.add(pool.submit(act));
 			}
@@ -110,13 +109,13 @@ public class Highlighter extends TaskHandler<HighlightTarget> {
 					case GESTURE:
 						acts.add(new GestureAction(tgt, duration, init, wait));
 						break;
-					case LIGHT:
+					case AMBIENT_LIGHT:
 						acts.add(new LightAction(tgt, duration));
 						break;
 					case SOUND:
 						acts.add(new SoundAction(tgt, duration, init, wait));
 						break;
-					case SPOT:
+					case SPOT_LIGHT:
 						acts.add(new SpotAction(tgt, duration, init, wait));
 				}
 			} catch (InitializeException ex) {
