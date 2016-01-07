@@ -15,6 +15,10 @@ public enum Target {
 	TV,
 	Zen,
 	Flobi,
-	Meka
+	Meka,
+	cupboard1,
+	cupboard2,
+	drawer1,
+	drawer2
 	
 }
