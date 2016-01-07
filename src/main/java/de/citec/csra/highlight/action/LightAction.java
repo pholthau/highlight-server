@@ -38,6 +38,10 @@ public class LightAction implements Callable<State> {
 		this.labels.put(Target.Flobi, "Hallway_0");
 		this.labels.put(Target.Meka, "Living_0");
 		this.labels.put(Target.Zen, "Slamp2");
+		this.labels.put(Target.cupboard1, "503");
+		this.labels.put(Target.cupboard2, "505");
+		this.labels.put(Target.drawer1, "502");
+		this.labels.put(Target.drawer2, "507");
 
 		try {
 			this.units = Remotes.get().getDevices().getUnitConfigsByLabel(labels.get(tgt));
@@ -79,7 +83,7 @@ public class LightAction implements Callable<State> {
 			}
 		}
 		Thread.sleep(duration);
-		
+
 		for (UnitConfig unit : units) {
 			switch (unit.getType()) {
 				case AMBIENT_LIGHT:
