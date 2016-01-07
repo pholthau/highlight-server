@@ -62,7 +62,7 @@ public class Highlighter extends TaskHandler<HighlightTarget> {
 	public State initializeTask(HighlightTarget payload) {
 
 		Target tgt = ep.getValue(payload.getTargetId());
-		this.duration = payload.getDuration().getTime();
+		this.duration = payload.getDuration().getTime()/1000;
 		this.actions = getActions(tgt, payload.getModalityList());
 		if (this.actions.isEmpty()) {
 			return REJECTED;
