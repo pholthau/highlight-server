@@ -65,6 +65,7 @@ public class Highlighter extends TaskHandler<HighlightTarget> {
 		this.duration = payload.getDuration().getTime()/1000;
 		this.actions = getActions(tgt, payload.getModalityList());
 		if (this.actions.isEmpty()) {
+			LOG.log(Level.WARNING, "No action found for target ''{0}'' and modalities ''{1}'', rejecting.", new Object[]{tgt.name(), payload.getModalityList()});
 			return REJECTED;
 		} else {
 			return ACCEPTED;
@@ -88,6 +89,7 @@ public class Highlighter extends TaskHandler<HighlightTarget> {
 			if (success) {
 				return COMPLETED;
 			} else {
+				LOG.log(Level.WARNING, "Action execution failed.");
 				return FAILED;
 			}
 		} catch (InterruptedException ex) {
