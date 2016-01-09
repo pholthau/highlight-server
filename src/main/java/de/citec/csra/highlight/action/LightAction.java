@@ -5,7 +5,6 @@
  */
 package de.citec.csra.highlight.action;
 
-import de.citec.csra.highlight.Target;
 import de.citec.csra.util.Remotes;
 import de.citec.dal.remote.unit.AmbientLightRemote;
 import de.citec.dal.remote.unit.DimmerRemote;
@@ -14,9 +13,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Callable;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import rsb.InitializeException;
-import rst.communicationpatterns.TaskStateType.TaskState.State;
-import static rst.communicationpatterns.TaskStateType.TaskState.State.COMPLETED;
 import rst.homeautomation.state.PowerStateType.PowerState;
 import static rst.homeautomation.state.PowerStateType.PowerState.State.ON;
 import rst.homeautomation.unit.UnitConfigType.UnitConfig;
@@ -26,25 +25,16 @@ import rst.homeautomation.unit.UnitConfigType.UnitConfig;
  * @author Patrick Holthaus
  * (<a href=mailto:patrick.holthaus@uni-bielefeld.de>patrick.holthaus@uni-bielefeld.de</a>)
  */
-public class LightAction implements Callable<State> {
+public class LightAction implements Callable<Boolean> {
 
-	private final Map<Target, String> labels = new HashMap<>();
+	private final static Logger log = Logger.getLogger(LightAction.class.getName());
 	List<UnitConfig> units;
 	private final long duration;
 
-	public LightAction(Target tgt, long duration) throws InitializeException {
+	public LightAction(String cfg, long duration) throws InitializeException {
 		this.duration = duration;
-		this.labels.put(Target.TV, "Llamp6");
-		this.labels.put(Target.Flobi, "Hallway_0");
-		this.labels.put(Target.Meka, "Living_0");
-		this.labels.put(Target.Zen, "Slamp2");
-		this.labels.put(Target.cupboard1, "503");
-		this.labels.put(Target.cupboard2, "505");
-		this.labels.put(Target.drawer1, "502");
-		this.labels.put(Target.drawer2, "507");
-
 		try {
-			this.units = Remotes.get().getDevices().getUnitConfigsByLabel(labels.get(tgt));
+			this.units = Remotes.get().getDevices().getUnitConfigsByLabel(cfg);
 			for (UnitConfig unit : units) {
 				switch (unit.getType()) {
 					case AMBIENT_LIGHT:
@@ -60,13 +50,13 @@ public class LightAction implements Callable<State> {
 		} catch (InstantiationException | InterruptedException | CouldNotPerformException | IllegalArgumentException ex) {
 			throw new InitializeException(ex);
 		}
-
 	}
 
 	@Override
-	public State call() throws Exception {
+	public Boolean call() throws Exception {
 		Map<UnitConfig, PowerState.State> states = new HashMap<>();
 		for (UnitConfig unit : units) {
+			log.log(Level.INFO, "Switching unit ''{0}'' to ''ON''.", unit.getLabel());
 			switch (unit.getType()) {
 				case AMBIENT_LIGHT:
 					AmbientLightRemote light = Remotes.get().getAmbientLight(unit);
@@ -79,12 +69,15 @@ public class LightAction implements Callable<State> {
 					dimmer.setPower(ON);
 					break;
 				default:
-					throw new IllegalArgumentException("unsupported type '" + unit.getLabel() + "'");
+					return false;
 			}
 		}
+		
+		log.log(Level.INFO, "Sleeping {0}ms.", duration);
 		Thread.sleep(duration);
 
 		for (UnitConfig unit : units) {
+			log.log(Level.INFO, "Switching unit ''{0}'' to ''OFF''.", unit.getLabel());
 			switch (unit.getType()) {
 				case AMBIENT_LIGHT:
 					AmbientLightRemote light = Remotes.get().getAmbientLight(unit);
@@ -95,10 +88,10 @@ public class LightAction implements Callable<State> {
 					dimmer.setPower(states.get(unit));
 					break;
 				default:
-					throw new IllegalArgumentException("unsupported type '" + unit.getLabel() + "'");
+					return false;
 			}
 		}
-		return COMPLETED;
+		return true;
 	}
 
 }

@@ -6,7 +6,6 @@
 package de.citec.csra.highlight.action;
 
 import de.citec.csra.arbitration.task.cli.RemoteTask;
-import de.citec.csra.highlight.Target;
 import rsb.InitializeException;
 
 /**
@@ -14,13 +13,12 @@ import rsb.InitializeException;
  * @author Patrick Holthaus
  * (<a href=mailto:patrick.holthaus@uni-bielefeld.de>patrick.holthaus@uni-bielefeld.de</a>)
  */
-public class SoundAction extends RemoteTask<String, String> {
+public class StringTask extends RemoteTask<String, String> {
 
-	public SoundAction(Target tgt, long duration, long init, long wait) throws InitializeException {
-		super("/sound/action", String.class, String.class);
-		String payload = tgt.name() + ":" + duration;
+	public StringTask(String scope, String cfg, long duration, long init, long wait) throws InitializeException {
+		super(scope, String.class, String.class);
+		String payload = cfg + ":" + duration;
 		configure(payload, init, wait);
 	}
 
 }
-

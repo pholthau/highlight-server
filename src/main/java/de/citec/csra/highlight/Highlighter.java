@@ -5,64 +5,62 @@
  */
 package de.citec.csra.highlight;
 
-import de.citec.csra.highlight.action.GazeAction;
-import de.citec.csra.highlight.action.GestureAction;
 import de.citec.csra.highlight.action.LightAction;
-import de.citec.csra.highlight.action.SoundAction;
-import de.citec.csra.highlight.action.SpotAction;
+import de.citec.csra.highlight.action.RemoteServerAction;
+import de.citec.csra.highlight.com.DefaultRemotes;
+import de.citec.csra.highlight.tgt.DefaultTargets;
+import de.citec.csra.highlight.tgt.Target;
+import de.citec.csra.highlight.tgt.TargetMap;
 import de.citec.csra.task.srv.TaskHandler;
 import de.citec.csra.util.EnumParser;
 import de.citec.csra.util.ScopeParser;
-import de.citec.csra.util.UnitParser;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import rsb.InitializeException;
+import rsb.RSBException;
 import rst.communicationpatterns.TaskStateType.TaskState.State;
 import static rst.communicationpatterns.TaskStateType.TaskState.State.ACCEPTED;
-import static rst.communicationpatterns.TaskStateType.TaskState.State.COMPLETED;
-import static rst.communicationpatterns.TaskStateType.TaskState.State.FAILED;
 import static rst.communicationpatterns.TaskStateType.TaskState.State.REJECTED;
 import rst.hri.HighlightTargetType.HighlightTarget;
 import rst.hri.HighlightTargetType.HighlightTarget.Modality;
+import static rst.hri.HighlightTargetType.HighlightTarget.Modality.GAZE;
 
 /**
  *
  * @author Patrick Holthaus
  * (<a href=mailto:patrick.holthaus@uni-bielefeld.de>patrick.holthaus@uni-bielefeld.de</a>)
  */
-public class Highlighter extends TaskHandler<HighlightTarget> {
+public class Highlighter extends TaskHandler<HighlightTarget, Boolean> {
 
 	private final static Logger LOG = Logger.getLogger(Highlighter.class.getName());
-	
 
 	ExecutorService pool = Executors.newFixedThreadPool(10);
 	EnumParser<Target> ep = new EnumParser<>(Target.class);
 	ScopeParser sp = new ScopeParser();
-	UnitParser up = new UnitParser();
-	private Set<Callable<State>> actions;
+	private Set<Callable<?>> actions;
 	private final long init = 2000;
 	private final long wait = 10000;
 	private long duration;
 
-	public Highlighter(String scope) throws InitializeException {
-		super(scope, HighlightTarget.class);
+	public Highlighter(String scope) throws InitializeException, RSBException {
+		super(scope, HighlightTarget.class, Boolean.class);
+		DefaultTargets.load();
+		DefaultRemotes.load();
 	}
 
 	@Override
 	public State initializeTask(HighlightTarget payload) {
 
 		Target tgt = ep.getValue(payload.getTargetId());
-		this.duration = payload.getDuration().getTime()/1000;
+		this.duration = payload.getDuration().getTime() / 1000;
 		this.actions = getActions(tgt, payload.getModalityList());
 		if (this.actions.isEmpty()) {
 			LOG.log(Level.WARNING, "No action found for target ''{0}'' and modalities ''{1}'', rejecting.", new Object[]{tgt.name(), payload.getModalityList()});
@@ -73,54 +71,41 @@ public class Highlighter extends TaskHandler<HighlightTarget> {
 	}
 
 	@Override
-	public State handleTask(HighlightTarget payload) {
-		try {
-			Set<Future<State>> futures = new HashSet<>();
-			boolean success = true;
-			for (Callable<State> act : this.actions) {
-				futures.add(pool.submit(act));
-			}
-			for (Future<State> f : futures) {
-				State s = f.get(init + duration + wait, TimeUnit.MILLISECONDS);
-				if(!f.isDone() || s == null){
+	public Boolean handleTask(HighlightTarget payload) throws Exception {
+		Set<Future<?>> futures = new HashSet<>();
+		boolean success = true;
+		for (Callable<?> act : this.actions) {
+			LOG.log(Level.INFO, "Queuing action ''{0}''.", act.getClass().getSimpleName());
+			futures.add(pool.submit(act));
+		}
+		for (Future<?> f : futures) {
+				Object s = f.get(init + duration + wait, TimeUnit.MILLISECONDS);
+				if (!f.isDone()) {
 					success = false;
 				}
-			}
-			if (success) {
-				return COMPLETED;
-			} else {
-				LOG.log(Level.WARNING, "Action execution failed.");
-				return FAILED;
-			}
-		} catch (InterruptedException ex) {
-			LOG.log(Level.SEVERE, "Action execution failed", ex);
-		} catch (ExecutionException | TimeoutException ex) {
-			LOG.log(Level.SEVERE, "Action execution failed", ex);
+				LOG.log(Level.INFO, "Action finished with return value ''{0}'' ({1}).", new Object[]{s, success});
 		}
-		return FAILED;
+		return success;
 	}
 
-	private Set<Callable<State>> getActions(Target tgt, List<Modality> modalities) {
-		Set<Callable<State>> acts = new HashSet<>();
+	private Set<Callable<?>> getActions(Target tgt, List<Modality> modalities) {
+		Set<Callable<?>> acts = new HashSet<>();
 		for (Modality m : modalities) {
 			try {
-				switch (m) {
-					case GAZE:
-						acts.add(new GazeAction(tgt, duration, init, wait));
-						break;
-					case GESTURE:
-						acts.add(new GestureAction(tgt, duration, init, wait));
-						break;
-					case AMBIENT_LIGHT:
-						acts.add(new LightAction(tgt, duration));
-						break;
-					case SOUND:
-						acts.add(new SoundAction(tgt, duration, init, wait));
-						break;
-					case SPOT_LIGHT:
-						acts.add(new SpotAction(tgt, duration, init, wait));
+				String cfg = TargetMap.get(tgt, m);
+				if (cfg != null) {
+					switch (m) {
+						case GAZE:
+						case GESTURE:
+						case SPOT_LIGHT:
+						case SOUND:
+							acts.add(new RemoteServerAction(tgt, m, duration));
+							break;
+						case AMBIENT_LIGHT:
+							acts.add(new LightAction(cfg, duration));
+					}
 				}
-			} catch (InitializeException ex) {
+			} catch (Exception ex) {
 				LOG.log(Level.WARNING, "Could not initialize action '" + m + "', skipping", ex);
 			}
 		}

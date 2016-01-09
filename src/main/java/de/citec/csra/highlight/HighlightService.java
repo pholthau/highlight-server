@@ -18,7 +18,8 @@ import rsb.InitializeException;
 import rsb.RSBException;
 import rsb.converter.DefaultConverterRepository;
 import rsb.converter.ProtocolBufferConverter;
-import rst.hri.HighlightTargetType;
+import rst.hri.HighlightTargetType.HighlightTarget;
+import rst.spatial.PanTiltAngleType.PanTiltAngle;
 
 /**
  *
@@ -31,7 +32,8 @@ public class HighlightService {
 	private final static Logger LOG = Logger.getLogger(HighlightService.class.getName());
 
 	static {
-		DefaultConverterRepository.getDefaultConverterRepository().addConverter(new ProtocolBufferConverter<>(HighlightTargetType.HighlightTarget.getDefaultInstance()));
+		DefaultConverterRepository.getDefaultConverterRepository().addConverter(new ProtocolBufferConverter<>(HighlightTarget.getDefaultInstance()));
+		DefaultConverterRepository.getDefaultConverterRepository().addConverter(new ProtocolBufferConverter<>(PanTiltAngle.getDefaultInstance()));
 	}
 
 	public static void main(String[] args) throws InitializeException, RSBException, InterruptedException, ParseException {
