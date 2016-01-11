@@ -5,28 +5,28 @@
  */
 package de.citec.csra.highlight.com;
 
-import de.citec.csra.util.PanTiltAngleParser;
+import de.citec.csra.util.SphericalDirectionFloatParser;
 import rsb.RSBException;
-import rst.spatial.PanTiltAngleType.PanTiltAngle;
+import rst.geometry.SphericalDirectionFloatType.SphericalDirectionFloat;
 
 /**
  *
  * @author Patrick Holthaus
  * (<a href=mailto:patrick.holthaus@uni-bielefeld.de>patrick.holthaus@uni-bielefeld.de</a>)
  */
-public class BeamerConfig extends RemoteServerConfig<PanTiltAngle> implements Preparable<Boolean>, Resetable<PanTiltAngle>, Finalizeable<Boolean> {
+public class BeamerConfig extends RemoteServerConfig<SphericalDirectionFloat> implements Preparable<String, Boolean>, Resetable<String, SphericalDirectionFloat>, Finalizeable<String, Boolean> {
 
 	public BeamerConfig() throws RSBException {
-		super("/home/living/movinghead","setPanTilt", new PanTiltAngleParser());
+		super("/home/living/movinghead", "setPanTilt", new SphericalDirectionFloatParser());
 	}
 
 	@Override
-	public String getPrepareInterface(){
+	public String getPrepareInterface() {
 		return "setShutterOpen";
 	}
-	
+
 	@Override
-	public Boolean getPrepareArgument(){
+	public Boolean getPrepareArgument() {
 		return true;
 	}
 
@@ -36,8 +36,8 @@ public class BeamerConfig extends RemoteServerConfig<PanTiltAngle> implements Pr
 	}
 
 	@Override
-	public PanTiltAngle getResetArgument() {
-		return PanTiltAngle.getDefaultInstance();
+	public SphericalDirectionFloat getResetArgument() {
+		return SphericalDirectionFloat.newBuilder().setAzimuth(0).setElevation(0).build();
 	}
 
 	@Override

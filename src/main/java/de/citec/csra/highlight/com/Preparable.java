@@ -10,9 +10,9 @@ package de.citec.csra.highlight.com;
  * @author Patrick Holthaus
  * (<a href=mailto:patrick.holthaus@uni-bielefeld.de>patrick.holthaus@uni-bielefeld.de</a>)
  */
-public interface Preparable<T> {
+public interface Preparable<I, A> {
 
-	public String getPrepareInterface();
-
-	public T getPrepareArgument();
+	public I getPrepareInterface();
+	public A getPrepareArgument();
+	
 }

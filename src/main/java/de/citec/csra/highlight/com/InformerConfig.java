@@ -21,13 +21,21 @@ public class InformerConfig<T> extends RemoteConfig<T> {
 	private Informer informer;
 	private Listener listener;
 	
-	public InformerConfig(Informer informer, StringParser<T> parser) throws RSBException{
+	public InformerConfig(Informer informer, Listener listener, StringParser<T> parser) throws RSBException{
 		setInformer(informer);
+		setListener(listener);
+		setParser(parser);
+	}
+	
+	public InformerConfig(String informerScope, String listenerScope, StringParser<T> parser) throws RSBException{
+		setActiveInformer(informerScope);
+		setActiveListener(listenerScope);
 		setParser(parser);
 	}
 	
 	public InformerConfig(String scope, StringParser<T> parser) throws RSBException{
 		setActiveInformer(scope);
+		setActiveListener(scope);
 		setParser(parser);
 	}
 

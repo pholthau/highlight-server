@@ -43,7 +43,7 @@ public class RemoteServerAction<T, R> implements Callable<R> {
 		String method = remoteConf.getExecuteMethod();
 
 		if (remoteConf instanceof Preparable) {
-			Preparable bc = (Preparable) remoteConf;
+			Preparable<String, ?> bc = (Preparable<String, ?>) remoteConf;
 			String pMeth = bc.getPrepareInterface();
 			Object pArg = bc.getPrepareArgument();
 			log.log(Level.INFO, "Calling remote server ''{0}'' at method ''{1}'' with argument ''{2}'' for preparation.", new Object[]{r.getScope(), pMeth, pArg != null ? pArg.toString().replaceAll("\n", " ") : pArg});
@@ -61,7 +61,7 @@ public class RemoteServerAction<T, R> implements Callable<R> {
 		Thread.sleep(duration);
 
 		if (remoteConf instanceof Resetable) {
-			Resetable rc = (Resetable) remoteConf;
+			Resetable<String, ?> rc = (Resetable<String, ?>) remoteConf;
 			String rMeth = rc.getResetInterface();
 			Object rArg = rc.getResetArgument();
 			if (rMeth == null) {
@@ -72,7 +72,7 @@ public class RemoteServerAction<T, R> implements Callable<R> {
 		}
 		
 		if (remoteConf instanceof Finalizeable) {
-			Finalizeable rc = (Finalizeable) remoteConf;
+			Finalizeable<String, ?> rc = (Finalizeable<String, ?>) remoteConf;
 			String fMeth = rc.getFinalizeInterface();
 			Object fArg = rc.getFinalizeArgument();
 			if (fMeth == null) {

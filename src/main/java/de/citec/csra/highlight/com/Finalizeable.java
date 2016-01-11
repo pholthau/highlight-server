@@ -10,9 +10,9 @@ package de.citec.csra.highlight.com;
  * @author Patrick Holthaus
  * (<a href=mailto:patrick.holthaus@uni-bielefeld.de>patrick.holthaus@uni-bielefeld.de</a>)
  */
-public interface Finalizeable<T> {
+public interface Finalizeable<I, A> {
 	
-	public String getFinalizeInterface();
+	public I getFinalizeInterface();
 
-	public T getFinalizeArgument();
+	public A getFinalizeArgument();
 }

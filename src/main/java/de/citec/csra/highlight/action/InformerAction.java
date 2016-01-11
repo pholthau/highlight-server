@@ -45,10 +45,13 @@ public class InformerAction<T, R> implements Callable<R> {
 		Listener l = remoteConf.getListener();
 
 		if (remoteConf instanceof Preparable) {
-			Preparable bc = (Preparable) remoteConf;
+			Preparable<Informer, ?> bc = (Preparable<Informer, ?>) remoteConf;
+			Informer pInf = bc.getPrepareInterface();
+			
 			Object pArg = bc.getPrepareArgument();
-			log.log(Level.INFO, "Sending to ''{0}'' with argument ''{1}'' for preparation.", new Object[]{i.getScope(), pArg != null ? pArg.toString().replaceAll("\n", " ") : pArg});
-			i.send(pArg);
+			log.log(Level.INFO, "Sending to ''{0}'' with argument ''{1}'' for preparation.", new Object[]{pInf.getScope(), pArg != null ? pArg.toString().replaceAll("\n", " ") : pArg});
+			pInf.send(pArg);
+			Thread.sleep(100);
 		}
 		
 		QueueAdapter<R> q = new QueueAdapter();
@@ -68,17 +71,20 @@ public class InformerAction<T, R> implements Callable<R> {
 		R ret = q.getQueue().poll();
 				
 		if (remoteConf instanceof Resetable) {
-			Resetable rc = (Resetable) remoteConf;
+			Resetable<Informer, ?> rc = (Resetable<Informer, ?>) remoteConf;
 			Object rArg = rc.getResetArgument();
-			log.log(Level.INFO, "Sending to ''{0}'' with argument ''{1}'' for reset.", new Object[]{i.getScope(), rArg != null ? rArg.toString().replaceAll("\n", " ") : rArg});
-			i.send(rArg);
+			Informer rInf = rc.getResetInterface();
+			log.log(Level.INFO, "Sending to ''{0}'' with argument ''{1}'' for reset.", new Object[]{rInf.getScope(), rArg != null ? rArg.toString().replaceAll("\n", " ") : rArg});
+			rInf.send(rArg);
 		}
 		
 		if (remoteConf instanceof Finalizeable) {
-			Finalizeable rc = (Finalizeable) remoteConf;
+			Thread.sleep(100);
+			Finalizeable<Informer, ?> rc = (Finalizeable<Informer, ?>) remoteConf;
 			Object fArg = rc.getFinalizeArgument();
-			log.log(Level.INFO, "Sending to ''{0}'' with argument ''{1}'' for finalization.", new Object[]{i.getScope(), fArg != null ? fArg.toString().replaceAll("\n", " ") : fArg});
-			i.send(fArg);
+			Informer fInf = rc.getFinalizeInterface();
+			log.log(Level.INFO, "Sending to ''{0}'' with argument ''{1}'' for finalization.", new Object[]{fInf.getScope(), fArg != null ? fArg.toString().replaceAll("\n", " ") : fArg});
+			fInf.send(fArg);
 		}
 		
 		return ret;
