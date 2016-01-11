@@ -5,23 +5,23 @@
  */
 package de.citec.csra.highlight.com;
 
-import de.citec.csra.util.PanTiltAngleParser;
+import de.citec.csra.util.SphericalDirectionFloatParser;
 import rsb.RSBException;
-import rst.spatial.PanTiltAngleType.PanTiltAngle;
+import rst.geometry.SphericalDirectionFloatType.SphericalDirectionFloat;
 
 /**
  *
  * @author Patrick Holthaus
  * (<a href=mailto:patrick.holthaus@uni-bielefeld.de>patrick.holthaus@uni-bielefeld.de</a>)
  */
-public class MekaGazeConfig extends InformerConfig<PanTiltAngle> implements Preparable<Boolean>, Finalizeable<Boolean> {
+public class MekaGazeConfig extends InformerConfig<SphericalDirectionFloat> implements Preparable<Boolean>, Finalizeable<Boolean> {
 
 	
 	//		informer "/meka/robotgazetools/set/pause" (pause/resume as payload)
 //		listener "/meka/robotgazetools/get/pause" (true/false as payload)
 	
 	public MekaGazeConfig() throws RSBException {
-		super("/meka/robotgaze/set/gaze", new PanTiltAngleParser());
+		super("/meka/robotgaze/set/gaze", new SphericalDirectionFloatParser());
 	}
 
 	@Override
