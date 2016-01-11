@@ -14,15 +14,19 @@ import rst.spatial.PanTiltAngleType.PanTiltAngle;
  * @author Patrick Holthaus
  * (<a href=mailto:patrick.holthaus@uni-bielefeld.de>patrick.holthaus@uni-bielefeld.de</a>)
  */
-public class BeamerConfig extends RemoteServerConfig<PanTiltAngle> implements Preparable<Boolean>, Resetable<PanTiltAngle>, Finalizeable<Boolean> {
+public class MekaGazeConfig extends InformerConfig<PanTiltAngle> implements Preparable<Boolean>, Finalizeable<Boolean> {
 
-	public BeamerConfig() throws RSBException {
-		super("/home/living/movinghead","setPanTilt", new PanTiltAngleParser());
+	
+	//		informer "/meka/robotgazetools/set/pause" (pause/resume as payload)
+//		listener "/meka/robotgazetools/get/pause" (true/false as payload)
+	
+	public MekaGazeConfig() throws RSBException {
+		super("/meka/robotgaze/set/gaze", new PanTiltAngleParser());
 	}
 
 	@Override
 	public String getPrepareInterface(){
-		return "setShutterOpen";
+		return "/meka/robotgaze/set/pause";
 	}
 	
 	@Override
@@ -31,18 +35,8 @@ public class BeamerConfig extends RemoteServerConfig<PanTiltAngle> implements Pr
 	}
 
 	@Override
-	public String getResetInterface() {
-		return "setPanTilt";
-	}
-
-	@Override
-	public PanTiltAngle getResetArgument() {
-		return PanTiltAngle.getDefaultInstance();
-	}
-
-	@Override
 	public String getFinalizeInterface() {
-		return "setShutterOpen";
+		return "/meka/robotgazetools/set/pause";
 	}
 
 	@Override

@@ -5,10 +5,8 @@
  */
 package de.citec.csra.highlight.com;
 
-import de.citec.csra.util.PanTiltAngleParser;
 import rsb.RSBException;
 import static rst.hri.HighlightTargetType.HighlightTarget.Modality.*;
-import rst.spatial.PanTiltAngleType.PanTiltAngle;
 
 /**
  *
@@ -18,13 +16,11 @@ import rst.spatial.PanTiltAngleType.PanTiltAngle;
 public class DefaultRemotes {
 
 	public static void load() throws RSBException {
-		RemoteServerConfig<PanTiltAngle> spot = new BeamerConfig();
-		RemoteServerConfig<PanTiltAngle> gaze = new RemoteServerConfig("/meka/gaze", "setPanTilt", new PanTiltAngleParser());
 		RemoteServerConfig<String> gesture = new RemoteServerConfig("/meka/gesture", "setPose", null);
 		RemoteServerConfig<String> sound = new RemoteServerConfig("/home/audio/control/radio/", "play", null);
 
-		RemoteMap.register(SPOT_LIGHT, spot);
-		RemoteMap.register(GAZE, gaze);
+		RemoteMap.register(SPOT_LIGHT, new BeamerConfig());
+		RemoteMap.register(GAZE, new MekaGazeConfig());
 		RemoteMap.register(GESTURE, gesture);
 		RemoteMap.register(SOUND, sound);
 	}

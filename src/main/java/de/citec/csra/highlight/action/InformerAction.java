@@ -5,6 +5,7 @@
  */
 package de.citec.csra.highlight.action;
 
+import de.citec.csra.highlight.com.Finalizeable;
 import de.citec.csra.highlight.com.InformerConfig;
 import de.citec.csra.highlight.com.Preparable;
 import de.citec.csra.highlight.com.RemoteMap;
@@ -71,6 +72,13 @@ public class InformerAction<T, R> implements Callable<R> {
 			Object rArg = rc.getResetArgument();
 			log.log(Level.INFO, "Sending to ''{0}'' with argument ''{1}'' for reset.", new Object[]{i.getScope(), rArg != null ? rArg.toString().replaceAll("\n", " ") : rArg});
 			i.send(rArg);
+		}
+		
+		if (remoteConf instanceof Finalizeable) {
+			Finalizeable rc = (Finalizeable) remoteConf;
+			Object fArg = rc.getFinalizeArgument();
+			log.log(Level.INFO, "Sending to ''{0}'' with argument ''{1}'' for finalization.", new Object[]{i.getScope(), fArg != null ? fArg.toString().replaceAll("\n", " ") : fArg});
+			i.send(fArg);
 		}
 		
 		return ret;

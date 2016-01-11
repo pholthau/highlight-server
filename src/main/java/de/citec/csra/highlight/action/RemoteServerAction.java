@@ -5,6 +5,7 @@
  */
 package de.citec.csra.highlight.action;
 
+import de.citec.csra.highlight.com.Finalizeable;
 import de.citec.csra.highlight.com.Preparable;
 import de.citec.csra.highlight.com.RemoteMap;
 import de.citec.csra.highlight.com.RemoteServerConfig;
@@ -68,6 +69,17 @@ public class RemoteServerAction<T, R> implements Callable<R> {
 			}
 			log.log(Level.INFO, "Calling remote server ''{0}'' at method ''{1}'' with argument ''{2}'' for reset.", new Object[]{r.getScope(), rMeth, rArg != null ? rArg.toString().replaceAll("\n", " ") : rArg});
 			r.call(rMeth, rArg);
+		}
+		
+		if (remoteConf instanceof Finalizeable) {
+			Finalizeable rc = (Finalizeable) remoteConf;
+			String fMeth = rc.getFinalizeInterface();
+			Object fArg = rc.getFinalizeArgument();
+			if (fMeth == null) {
+				fMeth = method;
+			}
+			log.log(Level.INFO, "Calling remote server ''{0}'' at method ''{1}'' with argument ''{2}'' for finalization.", new Object[]{r.getScope(), fMeth, fArg != null ? fArg.toString().replaceAll("\n", " ") : fArg});
+			r.call(fMeth, fArg);
 		}
 		
 		return ret;
