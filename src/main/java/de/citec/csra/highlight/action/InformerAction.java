@@ -6,7 +6,9 @@
 package de.citec.csra.highlight.action;
 
 import de.citec.csra.highlight.com.InformerConfig;
+import de.citec.csra.highlight.com.Preparable;
 import de.citec.csra.highlight.com.RemoteMap;
+import de.citec.csra.highlight.com.Resetable;
 import de.citec.csra.highlight.tgt.Target;
 import de.citec.csra.highlight.tgt.TargetMap;
 import java.util.concurrent.Callable;
@@ -40,6 +42,14 @@ public class InformerAction<T, R> implements Callable<R> {
 
 		Informer i = remoteConf.getInformer();
 		Listener l = remoteConf.getListener();
+
+		if (remoteConf instanceof Preparable) {
+			Preparable bc = (Preparable) remoteConf;
+			Object pArg = bc.getPrepareArgument();
+			log.log(Level.INFO, "Sending to ''{0}'' with argument ''{1}'' for preparation.", new Object[]{i.getScope(), pArg != null ? pArg.toString().replaceAll("\n", " ") : pArg});
+			i.send(pArg);
+		}
+		
 		QueueAdapter<R> q = new QueueAdapter();
 		l.addHandler(q, true);
 
@@ -49,17 +59,20 @@ public class InformerAction<T, R> implements Callable<R> {
 		}
 
 		log.log(Level.INFO, "Sending to ''{0}'' with argument ''{1}'' as a target.", new Object[]{i.getScope(), arg.toString().replaceAll("\n", " ")});
+		q.getQueue().clear();
 		i.send(arg);
 
 		log.log(Level.INFO, "Sleeping {0}ms.", duration);
 		Thread.sleep(duration);
-
-		T z = remoteConf.getZero();
 		R ret = q.getQueue().poll();
-		if (z != null) {
-			log.log(Level.INFO, "Sending to ''{0}'' with argument ''{1}'' for reset.", new Object[]{i.getScope(), z != null ? z.toString().replaceAll("\n", " ") : z});
-			i.send(z);
+				
+		if (remoteConf instanceof Resetable) {
+			Resetable rc = (Resetable) remoteConf;
+			Object rArg = rc.getResetArgument();
+			log.log(Level.INFO, "Sending to ''{0}'' with argument ''{1}'' for reset.", new Object[]{i.getScope(), rArg != null ? rArg.toString().replaceAll("\n", " ") : rArg});
+			i.send(rArg);
 		}
+		
 		return ret;
 	}
 

@@ -18,28 +18,10 @@ import rst.spatial.PanTiltAngleType.PanTiltAngle;
 public class DefaultRemotes {
 
 	public static void load() throws RSBException {
-		RemoteServerConfig<PanTiltAngle> spot = new RemoteServerConfig();
-		spot.setActiveRemote("/home/living/movinghead");
-		spot.setStartMethod("setPanTilt");
-		spot.setZero(PanTiltAngle.getDefaultInstance());
-		spot.setParser(new PanTiltAngleParser());
-		
-		RemoteServerConfig<PanTiltAngle> gaze = new RemoteServerConfig();
-		gaze.setActiveRemote("/meka/gaze");
-		gaze.setStartMethod("setPanTilt");
-		gaze.setZero(PanTiltAngle.getDefaultInstance());
-		spot.setParser(new PanTiltAngleParser());
-		
-		RemoteServerConfig<String> gesture = new RemoteServerConfig();
-		gesture.setActiveRemote("/meka/gesture");
-		gesture.setStartMethod("setPose");
-
-		
-		RemoteServerConfig<String> sound = new RemoteServerConfig();
-		sound.setActiveRemote("/home/audio/control/radio/");
-		sound.setStartMethod("play");
-		sound.setZero("");
-		sound.setStopMethod("stop");
+		RemoteServerConfig<PanTiltAngle> spot = new BeamerConfig();
+		RemoteServerConfig<PanTiltAngle> gaze = new RemoteServerConfig("/meka/gaze", "setPanTilt", new PanTiltAngleParser());
+		RemoteServerConfig<String> gesture = new RemoteServerConfig("/meka/gesture", "setPose", null);
+		RemoteServerConfig<String> sound = new RemoteServerConfig("/home/audio/control/radio/", "play", null);
 
 		RemoteMap.register(SPOT_LIGHT, spot);
 		RemoteMap.register(GAZE, gaze);

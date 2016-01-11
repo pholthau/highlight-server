@@ -5,6 +5,7 @@
  */
 package de.citec.csra.highlight.com;
 
+import de.citec.csra.util.StringParser;
 import rsb.Factory;
 import rsb.RSBException;
 import rsb.patterns.RemoteServer;
@@ -17,37 +18,41 @@ import rsb.patterns.RemoteServer;
 public class RemoteServerConfig<T> extends RemoteConfig<T> {
 
 	private RemoteServer remote;
-	private String stopMethod;
-	private String startMethod;
+	private String executeMethod;
+	
+//	public RemoteServerConfig(){}
+	
+	public RemoteServerConfig(RemoteServer remote, String executeMethod, StringParser<T> parser) throws RSBException{
+		setRemote(remote);
+		setExecuteMethod(executeMethod);
+		setParser(parser);
+	}
+	
+	public RemoteServerConfig(String scope, String executeMethod, StringParser<T> parser) throws RSBException{
+		setActiveRemote(scope);
+		setExecuteMethod(executeMethod);
+		setParser(parser);
+	}
 
 	public RemoteServer getRemote() {
 		return remote;
 	}
 	
-	public void setActiveRemote(String scope) throws RSBException {
+	public final void setActiveRemote(String scope) throws RSBException {
 		RemoteServer s = Factory.getInstance().createRemoteServer(scope);
 		s.activate();
 		setRemote(s);
 	}
 
-	public void setRemote(RemoteServer remote) {
+	public final void setRemote(RemoteServer remote) {
 		this.remote = remote;
 	}
 
-	public String getStopMethod() {
-		return stopMethod;
+	public String getExecuteMethod() {
+		return executeMethod;
 	}
 
-	public void setStopMethod(String method) {
-		this.stopMethod = method;
+	public final void setExecuteMethod(String method) {
+		this.executeMethod = method;
 	}
-
-	public String getStartMethod() {
-		return startMethod;
-	}
-
-	public void setStartMethod(String method) {
-		this.startMethod = method;
-	}
-
 }

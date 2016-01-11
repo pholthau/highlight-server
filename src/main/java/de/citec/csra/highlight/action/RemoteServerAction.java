@@ -5,8 +5,10 @@
  */
 package de.citec.csra.highlight.action;
 
+import de.citec.csra.highlight.com.Preparable;
 import de.citec.csra.highlight.com.RemoteMap;
 import de.citec.csra.highlight.com.RemoteServerConfig;
+import de.citec.csra.highlight.com.Resetable;
 import de.citec.csra.highlight.tgt.Target;
 import de.citec.csra.highlight.tgt.TargetMap;
 import java.util.concurrent.Callable;
@@ -37,28 +39,37 @@ public class RemoteServerAction<T, R> implements Callable<R> {
 	public R call() throws Exception {
 
 		RemoteServer r = remoteConf.getRemote();
-		String method = remoteConf.getStartMethod();
-		String reset = remoteConf.getStopMethod();
+		String method = remoteConf.getExecuteMethod();
+
+		if (remoteConf instanceof Preparable) {
+			Preparable bc = (Preparable) remoteConf;
+			String pMeth = bc.getPrepareInterface();
+			Object pArg = bc.getPrepareArgument();
+			log.log(Level.INFO, "Calling remote server ''{0}'' at method ''{1}'' with argument ''{2}'' for preparation.", new Object[]{r.getScope(), pMeth, pArg != null ? pArg.toString().replaceAll("\n", " ") : pArg});
+			r.call(pMeth, pArg);
+		}
 
 		Object arg = target;
 		if (remoteConf.getParser() != null) {
 			arg = remoteConf.getParser().getValue(target);
 		}
-		T z = remoteConf.getZero();
-
 		log.log(Level.INFO, "Calling remote server ''{0}'' at method ''{1}'' with argument ''{2}'' as a target.", new Object[]{r.getScope(), method, arg.toString().replaceAll("\n", " ")});
 		R ret = r.call(method, arg);
-		
+
 		log.log(Level.INFO, "Sleeping {0}ms.", duration);
 		Thread.sleep(duration);
-		
-		if (z != null || reset != null) {
-			if (reset == null) {
-				reset = method;
+
+		if (remoteConf instanceof Resetable) {
+			Resetable rc = (Resetable) remoteConf;
+			String rMeth = rc.getResetInterface();
+			Object rArg = rc.getResetArgument();
+			if (rMeth == null) {
+				rMeth = method;
 			}
-			log.log(Level.INFO, "Calling remote server ''{0}'' at method ''{1}'' with argument ''{2}'' for reset.", new Object[]{r.getScope(), reset, z != null ? z.toString().replaceAll("\n", " ") : z});
-			r.call(reset, z);
+			log.log(Level.INFO, "Calling remote server ''{0}'' at method ''{1}'' with argument ''{2}'' for reset.", new Object[]{r.getScope(), rMeth, rArg != null ? rArg.toString().replaceAll("\n", " ") : rArg});
+			r.call(rMeth, rArg);
 		}
+		
 		return ret;
 
 	}
