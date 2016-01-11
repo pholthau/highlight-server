@@ -6,15 +6,15 @@
 package de.citec.csra.highlight.action;
 
 import de.citec.csra.util.Remotes;
-import de.citec.dal.remote.unit.AmbientLightRemote;
-import de.citec.dal.remote.unit.DimmerRemote;
-import de.citec.jul.exception.CouldNotPerformException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Callable;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.dc.bco.dal.remote.unit.AmbientLightRemote;
+import org.dc.bco.dal.remote.unit.DimmerRemote;
+import org.dc.jul.exception.CouldNotPerformException;
 import rsb.InitializeException;
 import rst.homeautomation.state.PowerStateType.PowerState;
 import static rst.homeautomation.state.PowerStateType.PowerState.State.ON;
@@ -72,7 +72,7 @@ public class LightAction implements Callable<Boolean> {
 					return false;
 			}
 		}
-		
+
 		log.log(Level.INFO, "Sleeping {0}ms.", duration);
 		Thread.sleep(duration);
 
