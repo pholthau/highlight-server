@@ -11,7 +11,10 @@ package de.citec.csra.highlight.tgt;
  * (<a href=mailto:patrick.holthaus@uni-bielefeld.de>patrick.holthaus@uni-bielefeld.de</a>)
  */
 public enum Target {
-	
+
+	Entrance,
+	Surface,
+	Plant,
 	TV,
 	Zen,
 	Flobi,
@@ -20,5 +23,5 @@ public enum Target {
 	cupboard2,
 	drawer1,
 	drawer2
-	
+
 }
