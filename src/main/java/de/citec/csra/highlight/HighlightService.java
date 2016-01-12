@@ -18,6 +18,7 @@ import rsb.InitializeException;
 import rsb.RSBException;
 import rsb.converter.DefaultConverterRepository;
 import rsb.converter.ProtocolBufferConverter;
+import rst.geometry.SphericalDirectionFloatType.SphericalDirectionFloat;
 import rst.hri.HighlightTargetType.HighlightTarget;
 import rst.spatial.PanTiltAngleType.PanTiltAngle;
 
@@ -33,6 +34,7 @@ public class HighlightService {
 
 	static {
 		DefaultConverterRepository.getDefaultConverterRepository().addConverter(new ProtocolBufferConverter<>(HighlightTarget.getDefaultInstance()));
+		DefaultConverterRepository.getDefaultConverterRepository().addConverter(new ProtocolBufferConverter<>(SphericalDirectionFloat.getDefaultInstance()));
 		DefaultConverterRepository.getDefaultConverterRepository().addConverter(new ProtocolBufferConverter<>(PanTiltAngle.getDefaultInstance()));
 	}
 

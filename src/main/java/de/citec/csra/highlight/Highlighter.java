@@ -5,6 +5,7 @@
  */
 package de.citec.csra.highlight;
 
+import de.citec.csra.highlight.action.InformerAction;
 import de.citec.csra.highlight.action.LightAction;
 import de.citec.csra.highlight.action.RemoteServerAction;
 import de.citec.csra.highlight.com.DefaultRemotes;
@@ -97,8 +98,10 @@ public class Highlighter extends TaskHandler<HighlightTarget, Boolean> {
 					switch (m) {
 						case GAZE:
 						case GESTURE:
-						case SPOT_LIGHT:
 						case SOUND:
+							acts.add(new InformerAction(tgt, m, duration));
+							break;
+						case SPOT_LIGHT:
 							acts.add(new RemoteServerAction(tgt, m, duration));
 							break;
 						case AMBIENT_LIGHT:

@@ -5,22 +5,14 @@
  */
 package de.citec.csra.highlight.com;
 
-import de.citec.csra.util.StringParser;
-
 /**
  *
  * @author Patrick Holthaus
  * (<a href=mailto:patrick.holthaus@uni-bielefeld.de>patrick.holthaus@uni-bielefeld.de</a>)
  */
-public class RemoteConfig<T> {
+public interface Finalizeable<I, A> {
+	
+	public I getFinalizeInterface();
 
-	private StringParser<T> parser;
-
-	public StringParser<T> getParser() {
-		return parser;
-	}
-
-	public void setParser(StringParser<T> parser) {
-		this.parser = parser;
-	}
+	public A getFinalizeArgument();
 }
