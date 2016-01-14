@@ -18,42 +18,42 @@ public class DefaultTargets {
 
 		TargetConfig tv = new TargetConfig();
 		tv.setDescription(AMBIENT_LIGHT, "Llamp6").
-				setDescription(GAZE, "-20,-5").
+				setDescription(GAZE, "-20,1").
 				setDescription(GESTURE, "-20").
 				setDescription(SOUND, "Waikiki.ogg").
 				setDescription(SPOT_LIGHT, "335,70");
 
 		TargetConfig entrance = new TargetConfig();
 		entrance.setDescription(AMBIENT_LIGHT, "Hallway_0").
-				setDescription(GAZE, "60,0").
+				setDescription(GAZE, "70,1").
 				setDescription(GESTURE, "60").
 				setDescription(SOUND, "Waikiki.ogg").
 				setDescription(SPOT_LIGHT, "84,33");
 
 		TargetConfig surface = new TargetConfig();
 		surface.setDescription(AMBIENT_LIGHT, "MediaHue").
-				setDescription(GAZE, "-70,-20").
+				setDescription(GAZE, "-55,-15").
 				setDescription(GESTURE, "-70").
 				setDescription(SOUND, "Waikiki.ogg").
 				setDescription(SPOT_LIGHT, "220,90");
 
 		TargetConfig zen = new TargetConfig();
 		zen.setDescription(AMBIENT_LIGHT, "SLampRight2").
-				setDescription(GAZE, "-50,-15").
+				setDescription(GAZE, "-40,-5").
 				setDescription(GESTURE, "-50").
 				setDescription(SOUND, "Waikiki.ogg").
 				setDescription(SPOT_LIGHT, "290,60");
 
 		TargetConfig plant = new TargetConfig();
 		plant.setDescription(AMBIENT_LIGHT, "SLampRight2").
-				setDescription(GAZE, "-50,-15").
+				setDescription(GAZE, "-35,-10").
 				setDescription(GESTURE, "-50").
 				setDescription(SOUND, "Waikiki.ogg").
 				setDescription(SPOT_LIGHT, "194,74");
 
 		TargetConfig flobi = new TargetConfig();
 		flobi.setDescription(AMBIENT_LIGHT, "Hallway_0").
-				setDescription(GAZE, "60,0").
+				setDescription(GAZE, "70,1").
 				setDescription(GESTURE, "60").
 				setDescription(SOUND, "Waikiki.ogg").
 				setDescription(SPOT_LIGHT, "");
@@ -67,28 +67,28 @@ public class DefaultTargets {
 
 		TargetConfig cupboard1 = new TargetConfig();
 		cupboard1.setDescription(AMBIENT_LIGHT, "503").
-				setDescription(GAZE, "120,0").
+				setDescription(GAZE, "70,1").
 				setDescription(GESTURE, "120").
 				setDescription(SOUND, "Waikiki.ogg").
 				setDescription(SPOT_LIGHT, "117,31");
 
 		TargetConfig cupboard2 = new TargetConfig();
 		cupboard2.setDescription(AMBIENT_LIGHT, "505").
-				setDescription(GAZE, "115,0").
+				setDescription(GAZE, "70,1").
 				setDescription(GESTURE, "120").
 				setDescription(SOUND, "Waikiki.ogg").
 				setDescription(SPOT_LIGHT, "109,28");
 
 		TargetConfig drawer1 = new TargetConfig();
 		drawer1.setDescription(AMBIENT_LIGHT, "502").
-				setDescription(GAZE, "120,-25").
+				setDescription(GAZE, "70,-20").
 				setDescription(GESTURE, "120").
 				setDescription(SOUND, "Waikiki.ogg").
 				setDescription(SPOT_LIGHT, "114,45");
 
 		TargetConfig drawer2 = new TargetConfig();
 		drawer2.setDescription(AMBIENT_LIGHT, "507").
-				setDescription(GAZE, "120,-25").
+				setDescription(GAZE, "70,-20").
 				setDescription(GESTURE, "120").
 				setDescription(SOUND, "Waikiki.ogg").
 				setDescription(SPOT_LIGHT, "114,45");
