@@ -49,7 +49,7 @@ public class DefaultTargets {
 				setDescription(GAZE, "-35,-10").
 				setDescription(GESTURE, "-50").
 				setDescription(SOUND, "Waikiki.ogg").
-				setDescription(SPOT_LIGHT, "194,74");
+				setDescription(SPOT_LIGHT, "294,74");
 
 		TargetConfig flobi = new TargetConfig();
 		flobi.setDescription(AMBIENT_LIGHT, "Hallway_0").
@@ -99,7 +99,7 @@ public class DefaultTargets {
 		TargetMap.register(Target.Plant, plant);
 		TargetMap.register(Target.Flobi, flobi);
 		TargetMap.register(Target.Meka, meka);
-		TargetMap.register(Target.Zen, plant);
+		TargetMap.register(Target.Zen, zen);
 		TargetMap.register(Target.cupboard1, cupboard1);
 		TargetMap.register(Target.cupboard2, cupboard2);
 		TargetMap.register(Target.drawer1, drawer1);
