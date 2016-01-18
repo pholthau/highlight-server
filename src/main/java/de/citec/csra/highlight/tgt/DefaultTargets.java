@@ -5,6 +5,12 @@
  */
 package de.citec.csra.highlight.tgt;
 
+import static rst.hri.HighlightTargetType.HighlightTarget.Modality.AMBIENT_LIGHT;
+import static rst.hri.HighlightTargetType.HighlightTarget.Modality.GAZE;
+import static rst.hri.HighlightTargetType.HighlightTarget.Modality.GESTURE;
+import static rst.hri.HighlightTargetType.HighlightTarget.Modality.SOUND;
+import static rst.hri.HighlightTargetType.HighlightTarget.Modality.SPOT_LIGHT;
+
 /**
  *
  * @author Patrick Holthaus
