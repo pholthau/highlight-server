@@ -5,8 +5,6 @@
  */
 package de.citec.csra.highlight.tgt;
 
-import static rst.hri.HighlightTargetType.HighlightTarget.Modality.*;
-
 /**
  *
  * @author Patrick Holthaus
@@ -42,7 +40,7 @@ public class DefaultTargets {
 				setDescription(GAZE, "-40,-5").
 				setDescription(GESTURE, "-50").
 				setDescription(SOUND, "Waikiki.ogg").
-				setDescription(SPOT_LIGHT, "290,60");
+				setDescription(SPOT_LIGHT, "280,63");
 
 		TargetConfig plant = new TargetConfig();
 		plant.setDescription(AMBIENT_LIGHT, "SLampRight2").
