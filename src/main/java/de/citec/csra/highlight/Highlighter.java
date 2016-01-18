@@ -69,7 +69,7 @@ public class Highlighter extends TaskHandler<HighlightTarget, Boolean> {
 				return REJECTED;
 			}
 		} catch (IllegalArgumentException ex) {
-			LOG.log(Level.WARNING, "Invallid target ''{0}'', rejecting.", payload.getTargetId());
+			LOG.log(Level.WARNING, "Invalid target ''{0}'', rejecting.", payload.getTargetId());
 			return REJECTED;
 		}
 		return ACCEPTED;
