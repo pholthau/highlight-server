@@ -59,16 +59,20 @@ public class Highlighter extends TaskHandler<HighlightTarget, Boolean> {
 
 	@Override
 	public State initializeTask(HighlightTarget payload) {
+		try {
+			Target tgt = ep.getValue(payload.getTargetId().toUpperCase());
+			this.duration = payload.getDuration().getTime() / 1000;
+			this.actions = getActions(tgt, payload.getModalityList());
 
-		Target tgt = ep.getValue(payload.getTargetId());
-		this.duration = payload.getDuration().getTime() / 1000;
-		this.actions = getActions(tgt, payload.getModalityList());
-		if (this.actions.isEmpty()) {
-			LOG.log(Level.WARNING, "No action found for target ''{0}'' and modalities ''{1}'', rejecting.", new Object[]{tgt.name(), payload.getModalityList()});
+			if (this.actions.isEmpty()) {
+				LOG.log(Level.WARNING, "No action found for target ''{0}'' and modalities ''{1}'', rejecting.", new Object[]{payload.getTargetId(), payload.getModalityList()});
+				return REJECTED;
+			}
+		} catch (IllegalArgumentException ex) {
+			LOG.log(Level.WARNING, "Invallid target ''{0}'', rejecting.", payload.getTargetId());
 			return REJECTED;
-		} else {
-			return ACCEPTED;
 		}
+		return ACCEPTED;
 	}
 
 	@Override
@@ -80,11 +84,11 @@ public class Highlighter extends TaskHandler<HighlightTarget, Boolean> {
 			futures.add(pool.submit(act));
 		}
 		for (Future<?> f : futures) {
-				Object s = f.get(init + duration + wait, TimeUnit.MILLISECONDS);
-				if (!f.isDone()) {
-					success = false;
-				}
-				LOG.log(Level.INFO, "Action finished with return value ''{0}'' ({1}).", new Object[]{s, success});
+			Object s = f.get(init + duration + wait, TimeUnit.MILLISECONDS);
+			if (!f.isDone()) {
+				success = false;
+			}
+			LOG.log(Level.INFO, "Action finished with return value ''{0}'' ({1}).", new Object[]{s, success});
 		}
 		return success;
 	}

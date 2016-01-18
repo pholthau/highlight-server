@@ -98,16 +98,16 @@ public class DefaultTargets {
 				setDescription(SPOT_LIGHT, "114,45");
 
 		TargetMap.register(Target.TV, tv);
-		TargetMap.register(Target.Entrance, entrance);
-		TargetMap.register(Target.Surface, surface);
-		TargetMap.register(Target.Plant, plant);
-		TargetMap.register(Target.Flobi, flobi);
-		TargetMap.register(Target.Meka, meka);
-		TargetMap.register(Target.Zen, zen);
-		TargetMap.register(Target.cupboard1, cupboard1);
-		TargetMap.register(Target.cupboard2, cupboard2);
-		TargetMap.register(Target.drawer1, drawer1);
-		TargetMap.register(Target.drawer2, drawer2);
+		TargetMap.register(Target.ENTRANCE, entrance);
+		TargetMap.register(Target.SURFACE, surface);
+		TargetMap.register(Target.PLANT, plant);
+		TargetMap.register(Target.FLOBI, flobi);
+		TargetMap.register(Target.MEKA, meka);
+		TargetMap.register(Target.ZEN, zen);
+		TargetMap.register(Target.CUPBOARD1, cupboard1);
+		TargetMap.register(Target.CUPBOARD2, cupboard2);
+		TargetMap.register(Target.DRAWER1, drawer1);
+		TargetMap.register(Target.DRAWER2, drawer2);
 	}
 
 }

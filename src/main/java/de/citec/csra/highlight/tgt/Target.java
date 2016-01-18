@@ -12,16 +12,16 @@ package de.citec.csra.highlight.tgt;
  */
 public enum Target {
 
-	Entrance,
-	Surface,
-	Plant,
+	ENTRANCE,
+	SURFACE,
+	PLANT,
 	TV,
-	Zen,
-	Flobi,
-	Meka,
-	cupboard1,
-	cupboard2,
-	drawer1,
-	drawer2
+	ZEN,
+	FLOBI,
+	MEKA,
+	CUPBOARD1,
+	CUPBOARD2,
+	DRAWER1,
+	DRAWER2
 
 }
