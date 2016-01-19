@@ -37,7 +37,7 @@ public class BeamerConfig extends RemoteServerConfig<SphericalDirectionFloat> im
 
 	@Override
 	public SphericalDirectionFloat getResetArgument() {
-		return SphericalDirectionFloat.newBuilder().setAzimuth(0).setElevation(0).build();
+		return SphericalDirectionFloat.newBuilder().setAzimuth(180).setElevation(40).build();
 	}
 
 	@Override
