@@ -16,7 +16,7 @@ import static rst.hri.HighlightTargetType.HighlightTarget.Modality.*;
 public class DefaultRemotes {
 
 	public static void load() throws RSBException {
-		RemoteServerConfig<String> gesture = new RemoteServerConfig("/meka/gesture", "setPose", null);
+		InformerConfig<String> gesture = new InformerConfig("/meka/posture_execution/", "/meka/posture_execution/", null);
 		RemoteServerConfig<String> sound = new RemoteServerConfig("/home/audio/control/radio/", "play", null);
 
 		RemoteMap.register(SPOT_LIGHT, new BeamerConfig());
