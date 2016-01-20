@@ -15,6 +15,7 @@ import de.citec.csra.highlight.tgt.TargetMap;
 import de.citec.csra.task.srv.TaskHandler;
 import de.citec.csra.util.EnumParser;
 import de.citec.csra.util.ScopeParser;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -69,12 +70,13 @@ public class Highlighter extends TaskHandler<HighlightTarget, Boolean> {
 				return REJECTED;
 			}
 		} catch (IllegalArgumentException ex) {
-			LOG.log(Level.WARNING, "Invalid target ''{0}'', rejecting.", payload.getTargetId());
+			LOG.log(Level.WARNING, "Invalid target ''{0}'', rejecting. Available targets: {1}", new Object[]{payload.getTargetId(), Arrays.toString(Target.values())});
 			return REJECTED;
 		}
+		LOG.log(Level.INFO, "Action found for target ''{0}'' and modalities ''{1}'', accepting.", new Object[]{payload.getTargetId(), payload.getModalityList()});
 		return ACCEPTED;
 	}
-
+	
 	@Override
 	public Boolean handleTask(HighlightTarget payload) throws Exception {
 		Set<Future<?>> futures = new HashSet<>();
