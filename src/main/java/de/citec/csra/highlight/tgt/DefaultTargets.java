@@ -60,7 +60,7 @@ public class DefaultTargets {
 				setDescription(GAZE, "70,1").
 				setDescription(GESTURE, "all pointing_kitchen").
 				setDescription(SOUND, "Waikiki.ogg").
-				setDescription(SPOT_LIGHT, "");
+				setDescription(SPOT_LIGHT, "84,33");
 
 		TargetConfig meka = new TargetConfig();
 		meka.setDescription(AMBIENT_LIGHT, "Table_0").
