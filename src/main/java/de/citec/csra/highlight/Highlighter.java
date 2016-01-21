@@ -53,7 +53,7 @@ public class Highlighter extends TaskHandler<HighlightTarget, Boolean> {
 	private long duration;
 
 	public Highlighter(String scope) throws InitializeException, RSBException {
-		super(scope, HighlightTarget.class, Boolean.class);
+		super(scope, HighlightTarget.class, Boolean.class, new HighlightTargetParser());
 		DefaultTargets.load();
 		DefaultRemotes.load();
 	}
