@@ -14,6 +14,7 @@ import de.citec.csra.highlight.tgt.Target;
 import de.citec.csra.highlight.tgt.TargetMap;
 import de.citec.csra.task.srv.TaskHandler;
 import de.citec.csra.util.EnumParser;
+import de.citec.csra.util.HighlightTargetParser;
 import de.citec.csra.util.ScopeParser;
 import java.util.Arrays;
 import java.util.HashSet;
