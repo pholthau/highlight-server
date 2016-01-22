@@ -96,6 +96,13 @@ public class DefaultTargets {
 				setDescription(GESTURE, "all pointing_kitchen").
 				setDescription(SOUND, "Waikiki.ogg").
 				setDescription(SPOT_LIGHT, "114,45");
+		
+		TargetConfig water = new TargetConfig();
+		drawer2.setDescription(AMBIENT_LIGHT, "CeilingLamp_1").
+				setDescription(GAZE, "70,-15").
+				setDescription(GESTURE, "all pointing_kitchen").
+				setDescription(SOUND, "Waikiki.ogg").
+				setDescription(SPOT_LIGHT, "118,42");
 
 		TargetMap.register(Target.TV, tv);
 		TargetMap.register(Target.ENTRANCE, entrance);
@@ -108,6 +115,7 @@ public class DefaultTargets {
 		TargetMap.register(Target.CUPBOARD2, cupboard2);
 		TargetMap.register(Target.DRAWER1, drawer1);
 		TargetMap.register(Target.DRAWER2, drawer2);
+		TargetMap.register(Target.WATER, water);
 	}
 
 }

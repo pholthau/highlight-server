@@ -22,6 +22,7 @@ public enum Target {
 	CUPBOARD1,
 	CUPBOARD2,
 	DRAWER1,
-	DRAWER2
+	DRAWER2,
+	WATER,
 
 }
