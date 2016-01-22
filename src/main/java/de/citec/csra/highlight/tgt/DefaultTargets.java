@@ -98,7 +98,7 @@ public class DefaultTargets {
 				setDescription(SPOT_LIGHT, "114,45");
 		
 		TargetConfig water = new TargetConfig();
-		drawer2.setDescription(AMBIENT_LIGHT, "CeilingLamp_1").
+		water.setDescription(AMBIENT_LIGHT, "CeilingLamp_1").
 				setDescription(GAZE, "70,-15").
 				setDescription(GESTURE, "all pointing_kitchen").
 				setDescription(SOUND, "Waikiki.ogg").
