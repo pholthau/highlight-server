@@ -6,7 +6,6 @@
 package de.citec.csra.highlight.action;
 
 import de.citec.csra.util.Remotes;
-import java.awt.Color;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -45,6 +44,7 @@ public class LightAction implements Callable<Boolean> {
 	List<UnitConfig> units;
 	private final long duration;
 	private final long interrupt_wait;
+	private final HSVColor HIGHLIGHT = HSVColor.newBuilder().setHue(210).setSaturation(100).setValue(100).build();
 
 	public LightAction(String cfg, long duration, long interrupt_wait) throws InitializeException {
 		this.duration = duration;
@@ -82,8 +82,8 @@ public class LightAction implements Callable<Boolean> {
 					colors.put(unit, light.getColor());
 					log.log(Level.INFO, "Set unit power ''{0}'' to ''{1}''.", new Object[]{unit.getLabel(), "ON"});
 					light.setPower(ON);
-					log.log(Level.INFO, "Set unit color ''{0}'' to ''{1}''.", new Object[]{unit.getLabel(), Color.BLUE});
-					light.setColor(Color.BLUE);
+					log.log(Level.INFO, "Set unit color ''{0}'' to ''{1}''.", new Object[]{unit.getLabel(), HIGHLIGHT});
+					light.setColor(HIGHLIGHT);
 					break;
 				case DIMMER:
 					DimmerRemote dimmer = Remotes.get().getDimmer(unit);
