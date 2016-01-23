@@ -23,5 +23,7 @@ public class DefaultRemotes {
 		RemoteMap.register(GAZE, new MekaGazeConfig());
 		RemoteMap.register(GESTURE, gesture);
 		RemoteMap.register(SOUND, sound);
+		
+//		cancel?
 	}
 }

@@ -65,7 +65,7 @@ public class HighlightService {
 		}
 		scope = scope.replaceAll("/$", "");
 
-		TaskServer server = new TaskServer(new Highlighter(scope));
+		TaskServer server = new TaskServer(new AsyncHighlighter(scope));
 		server.activate();
 		LOG.log(Level.INFO, "Activated higlight service at scope ''{0}''", scope);
 

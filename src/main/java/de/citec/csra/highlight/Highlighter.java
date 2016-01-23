@@ -50,7 +50,7 @@ public class Highlighter extends TaskHandler<HighlightTarget, Boolean> {
 	ScopeParser sp = new ScopeParser();
 	private Set<Callable<?>> actions;
 	private final long init = 2000;
-	private final long wait = 10000;
+	private final long wait = 2000;
 	private long duration;
 
 	public Highlighter(String scope) throws InitializeException, RSBException {
@@ -95,7 +95,7 @@ public class Highlighter extends TaskHandler<HighlightTarget, Boolean> {
 		}
 		return success;
 	}
-
+	
 	private Set<Callable<?>> getActions(Target tgt, List<Modality> modalities) {
 		Set<Callable<?>> acts = new HashSet<>();
 		for (Modality m : modalities) {
@@ -112,7 +112,7 @@ public class Highlighter extends TaskHandler<HighlightTarget, Boolean> {
 							acts.add(new RemoteServerAction(tgt, m, duration));
 							break;
 						case AMBIENT_LIGHT:
-							acts.add(new LightAction(cfg, duration));
+							acts.add(new LightAction(cfg, duration, wait));
 					}
 				}
 			} catch (Exception ex) {
