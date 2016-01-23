@@ -82,7 +82,7 @@ public class LightAction implements Callable<Boolean> {
 					colors.put(unit, light.getColor());
 					log.log(Level.INFO, "Set unit power ''{0}'' to ''{1}''.", new Object[]{unit.getLabel(), "ON"});
 					light.setPower(ON);
-					log.log(Level.INFO, "Set unit color ''{0}'' to ''{1}''.", new Object[]{unit.getLabel(), HIGHLIGHT});
+					log.log(Level.INFO, "Set unit color ''{0}'' to ''{1}''.", new Object[]{unit.getLabel(), HIGHLIGHT.toString().replaceAll("\n", " ")});
 					light.setColor(HIGHLIGHT);
 					break;
 				case DIMMER:
