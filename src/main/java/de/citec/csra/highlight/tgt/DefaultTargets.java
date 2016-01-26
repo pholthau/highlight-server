@@ -99,7 +99,7 @@ public class DefaultTargets {
 		
 		TargetConfig water = new TargetConfig();
 		water.setDescription(AMBIENT_LIGHT, "CeilingLamp_1").
-				setDescription(GAZE, "70,-15").
+				setDescription(GAZE, "70,-10").
 				setDescription(GESTURE, "all pointing_kitchen").
 				setDescription(SOUND, "Waikiki.ogg").
 				setDescription(SPOT_LIGHT, "118,42");
