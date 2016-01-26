@@ -50,4 +50,9 @@ public class BeamerConfig extends RemoteServerConfig<SphericalDirectionFloat> im
 		return false;
 	}
 
+	@Override
+	public long getSleepDuration() {
+		return 0;
+	}
+
 }

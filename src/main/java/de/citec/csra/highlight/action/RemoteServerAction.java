@@ -73,6 +73,11 @@ public class RemoteServerAction<T, R> implements Callable<R> {
 		
 		if (remoteConf instanceof Finalizeable) {
 			Finalizeable<String, ?> rc = (Finalizeable<String, ?>) remoteConf;
+			try {
+				Thread.sleep(rc.getSleepDuration());
+			} catch (InterruptedException ex) {
+				log.log(Level.WARNING, "Sleeping for finalization interrupted, finalizing NOW.");
+			}
 			String fMeth = rc.getFinalizeInterface();
 			Object fArg = rc.getFinalizeArgument();
 			if (fMeth == null) {

@@ -12,6 +12,8 @@ package de.citec.csra.highlight.com;
  */
 public interface Finalizeable<I, A> {
 	
+	public long getSleepDuration();
+	
 	public I getFinalizeInterface();
 
 	public A getFinalizeArgument();

@@ -47,13 +47,13 @@ public class InformerAction<T, R> implements Callable<R> {
 		if (remoteConf instanceof Preparable) {
 			Preparable<Informer, ?> bc = (Preparable<Informer, ?>) remoteConf;
 			Informer pInf = bc.getPrepareInterface();
-			
+
 			Object pArg = bc.getPrepareArgument();
 			log.log(Level.INFO, "Sending to ''{0}'' with argument ''{1}'' for preparation.", new Object[]{pInf.getScope(), pArg != null ? pArg.toString().replaceAll("\n", " ") : pArg});
 			pInf.send(pArg);
 			Thread.sleep(100);
 		}
-		
+
 		QueueAdapter<R> q = new QueueAdapter();
 		l.addHandler(q, true);
 
@@ -69,7 +69,7 @@ public class InformerAction<T, R> implements Callable<R> {
 		log.log(Level.INFO, "Sleeping {0}ms.", duration);
 		Thread.sleep(duration);
 		R ret = q.getQueue().poll();
-				
+
 		if (remoteConf instanceof Resetable) {
 			Resetable<Informer, ?> rc = (Resetable<Informer, ?>) remoteConf;
 			Object rArg = rc.getResetArgument();
@@ -77,16 +77,20 @@ public class InformerAction<T, R> implements Callable<R> {
 			log.log(Level.INFO, "Sending to ''{0}'' with argument ''{1}'' for reset.", new Object[]{rInf.getScope(), rArg != null ? rArg.toString().replaceAll("\n", " ") : rArg});
 			rInf.send(rArg);
 		}
-		
+
 		if (remoteConf instanceof Finalizeable) {
-			Thread.sleep(100);
 			Finalizeable<Informer, ?> rc = (Finalizeable<Informer, ?>) remoteConf;
+			try {
+				Thread.sleep(rc.getSleepDuration());
+			} catch (InterruptedException ex) {
+				log.log(Level.WARNING, "Sleeping for finalization interrupted, finalizing NOW.");
+			}
 			Object fArg = rc.getFinalizeArgument();
 			Informer fInf = rc.getFinalizeInterface();
 			log.log(Level.INFO, "Sending to ''{0}'' with argument ''{1}'' for finalization.", new Object[]{fInf.getScope(), fArg != null ? fArg.toString().replaceAll("\n", " ") : fArg});
 			fInf.send(fArg);
 		}
-		
+
 		return ret;
 	}
 

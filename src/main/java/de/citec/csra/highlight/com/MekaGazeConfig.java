@@ -56,4 +56,9 @@ public class MekaGazeConfig extends InformerConfig<SphericalDirectionFloat> impl
 		return SphericalDirectionFloat.newBuilder().setAzimuth(0).setElevation(0).build();
 	}
 
+	@Override
+	public long getSleepDuration() {
+		return 1000;
+	}
+
 }
