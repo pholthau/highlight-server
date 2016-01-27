@@ -58,7 +58,7 @@ public class MekaGazeConfig extends InformerConfig<SphericalDirectionFloat> impl
 
 	@Override
 	public long getSleepDuration() {
-		return 1000;
+		return 1500;
 	}
 
 }
