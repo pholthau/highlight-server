@@ -61,12 +61,12 @@
 		<dependency>
 			<groupId>de.citec.csra</groupId>
 			<artifactId>arbitration-service</artifactId>
-			<version>[0.2,0.3-SNAPSHOT)</version>
+			<version>0.3-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>de.citec.csra</groupId>
 			<artifactId>ha-utils</artifactId>
-			<version>[0.2,0.3-SNAPSHOT)</version>
+			<version>0.3-SNAPSHOT</version>
 		</dependency>
 	</dependencies>
 	<build>
