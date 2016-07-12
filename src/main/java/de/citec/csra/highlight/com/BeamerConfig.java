@@ -22,7 +22,7 @@ public class BeamerConfig extends RemoteServerConfig<SphericalDirectionFloat> im
 
 	@Override
 	public String getPrepareInterface() {
-		return "setShutterOpen";
+		return "setShutterAndLampState";
 	}
 
 	@Override
@@ -42,7 +42,7 @@ public class BeamerConfig extends RemoteServerConfig<SphericalDirectionFloat> im
 
 	@Override
 	public String getFinalizeInterface() {
-		return "setShutterOpen";
+		return "setShutterState";
 	}
 
 	@Override
