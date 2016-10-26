@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>de.citec.csra</groupId>
 	<artifactId>highlight-service</artifactId>
-	<version>0.4-SNAPSHOT</version>
+	<version>0.4</version>
 	<packaging>jar</packaging>
     <repositories>
         <repository>
@@ -20,6 +20,8 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<maven.compiler.source>1.8</maven.compiler.source>
 		<maven.compiler.target>1.8</maven.compiler.target>
+		<arb.version>[0.7,)</arb.version>
+		<hau.version>[0.4,)</hau.version>
 		<rsb.version>[0.13,0.14-SNAPSHOT)</rsb.version>
 		<jul.version>[1.1,1.2-SNAPSHOT)</jul.version>
 		<rm.version>[1.1,1.2-SNAPSHOT)</rm.version>
@@ -72,12 +74,12 @@
 		<dependency>
 			<groupId>de.citec.csra</groupId>
 			<artifactId>arbitration-service</artifactId>
-			<version>0.8-SNAPSHOT</version>
+			<version>${arb.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>de.citec.csra</groupId>
 			<artifactId>ha-utils</artifactId>
-			<version>[0.3,)</version>
+			<version>${hau.version}</version>
 		</dependency>
 	</dependencies>
 	<build>
