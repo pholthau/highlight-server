@@ -18,6 +18,7 @@ import rsb.InitializeException;
 import rsb.RSBException;
 import rsb.converter.DefaultConverterRepository;
 import rsb.converter.ProtocolBufferConverter;
+import rst.geometry.SphericalDirectionFloatType.SphericalDirectionFloat;
 import rst.hri.HighlightTargetType.HighlightTarget;
 import rst.spatial.PanTiltAngleType.PanTiltAngle;
 
@@ -33,6 +34,7 @@ public class HighlightService {
 
 	static {
 		DefaultConverterRepository.getDefaultConverterRepository().addConverter(new ProtocolBufferConverter<>(HighlightTarget.getDefaultInstance()));
+		DefaultConverterRepository.getDefaultConverterRepository().addConverter(new ProtocolBufferConverter<>(SphericalDirectionFloat.getDefaultInstance()));
 		DefaultConverterRepository.getDefaultConverterRepository().addConverter(new ProtocolBufferConverter<>(PanTiltAngle.getDefaultInstance()));
 	}
 
@@ -63,7 +65,7 @@ public class HighlightService {
 		}
 		scope = scope.replaceAll("/$", "");
 
-		TaskServer server = new TaskServer(new Highlighter(scope));
+		TaskServer server = new TaskServer(new AsyncHighlighter(scope));
 		server.activate();
 		LOG.log(Level.INFO, "Activated higlight service at scope ''{0}''", scope);
 

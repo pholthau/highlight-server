@@ -11,14 +11,18 @@ package de.citec.csra.highlight.tgt;
  * (<a href=mailto:patrick.holthaus@uni-bielefeld.de>patrick.holthaus@uni-bielefeld.de</a>)
  */
 public enum Target {
-	
+
+	ENTRANCE,
+	SURFACE,
+	PLANT,
 	TV,
-	Zen,
-	Flobi,
-	Meka,
-	cupboard1,
-	cupboard2,
-	drawer1,
-	drawer2
-	
+	ZEN,
+	FLOBI,
+	MEKA,
+	CUPBOARD1,
+	CUPBOARD2,
+	DRAWER1,
+	DRAWER2,
+	WATER,
+
 }

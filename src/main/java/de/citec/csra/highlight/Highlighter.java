@@ -5,6 +5,7 @@
  */
 package de.citec.csra.highlight;
 
+import de.citec.csra.highlight.action.InformerAction;
 import de.citec.csra.highlight.action.LightAction;
 import de.citec.csra.highlight.action.RemoteServerAction;
 import de.citec.csra.highlight.com.DefaultRemotes;
@@ -13,7 +14,9 @@ import de.citec.csra.highlight.tgt.Target;
 import de.citec.csra.highlight.tgt.TargetMap;
 import de.citec.csra.task.srv.TaskHandler;
 import de.citec.csra.util.EnumParser;
+import de.citec.csra.util.HighlightTargetParser;
 import de.citec.csra.util.ScopeParser;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -47,29 +50,34 @@ public class Highlighter extends TaskHandler<HighlightTarget, Boolean> {
 	ScopeParser sp = new ScopeParser();
 	private Set<Callable<?>> actions;
 	private final long init = 2000;
-	private final long wait = 10000;
+	private final long wait = 2000;
 	private long duration;
 
 	public Highlighter(String scope) throws InitializeException, RSBException {
-		super(scope, HighlightTarget.class, Boolean.class);
+		super(scope, HighlightTarget.class, Boolean.class, new HighlightTargetParser());
 		DefaultTargets.load();
 		DefaultRemotes.load();
 	}
 
 	@Override
 	public State initializeTask(HighlightTarget payload) {
+		try {
+			Target tgt = ep.getValue(payload.getTargetId().toUpperCase());
+			this.duration = payload.getDuration().getTime() / 1000;
+			this.actions = getActions(tgt, payload.getModalityList());
 
-		Target tgt = ep.getValue(payload.getTargetId());
-		this.duration = payload.getDuration().getTime() / 1000;
-		this.actions = getActions(tgt, payload.getModalityList());
-		if (this.actions.isEmpty()) {
-			LOG.log(Level.WARNING, "No action found for target ''{0}'' and modalities ''{1}'', rejecting.", new Object[]{tgt.name(), payload.getModalityList()});
+			if (this.actions.isEmpty()) {
+				LOG.log(Level.WARNING, "No action found for target ''{0}'' and modalities ''{1}'', rejecting.", new Object[]{payload.getTargetId(), payload.getModalityList()});
+				return REJECTED;
+			}
+		} catch (IllegalArgumentException ex) {
+			LOG.log(Level.WARNING, "Invalid target ''{0}'', rejecting. Available targets: {1}", new Object[]{payload.getTargetId(), Arrays.toString(Target.values())});
 			return REJECTED;
-		} else {
-			return ACCEPTED;
 		}
+		LOG.log(Level.INFO, "Action found for target ''{0}'' and modalities ''{1}'', accepting.", new Object[]{payload.getTargetId(), payload.getModalityList()});
+		return ACCEPTED;
 	}
-
+	
 	@Override
 	public Boolean handleTask(HighlightTarget payload) throws Exception {
 		Set<Future<?>> futures = new HashSet<>();
@@ -79,15 +87,15 @@ public class Highlighter extends TaskHandler<HighlightTarget, Boolean> {
 			futures.add(pool.submit(act));
 		}
 		for (Future<?> f : futures) {
-				Object s = f.get(init + duration + wait, TimeUnit.MILLISECONDS);
-				if (!f.isDone()) {
-					success = false;
-				}
-				LOG.log(Level.INFO, "Action finished with return value ''{0}'' ({1}).", new Object[]{s, success});
+			Object s = f.get(init + duration + wait, TimeUnit.MILLISECONDS);
+			if (!f.isDone()) {
+				success = false;
+			}
+			LOG.log(Level.INFO, "Action finished with return value ''{0}'' ({1}).", new Object[]{s, success});
 		}
 		return success;
 	}
-
+	
 	private Set<Callable<?>> getActions(Target tgt, List<Modality> modalities) {
 		Set<Callable<?>> acts = new HashSet<>();
 		for (Modality m : modalities) {
@@ -97,12 +105,14 @@ public class Highlighter extends TaskHandler<HighlightTarget, Boolean> {
 					switch (m) {
 						case GAZE:
 						case GESTURE:
-						case SPOT_LIGHT:
 						case SOUND:
+							acts.add(new InformerAction(tgt, m, duration));
+							break;
+						case SPOT_LIGHT:
 							acts.add(new RemoteServerAction(tgt, m, duration));
 							break;
 						case AMBIENT_LIGHT:
-							acts.add(new LightAction(cfg, duration));
+							acts.add(new LightAction(cfg, duration, wait));
 					}
 				}
 			} catch (Exception ex) {
