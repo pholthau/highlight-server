@@ -4,7 +4,18 @@
 	<groupId>de.citec.csra</groupId>
 	<artifactId>highlight-service</artifactId>
 	<version>0.4-SNAPSHOT</version>
-	<packaging>jar</packaging>	
+	<packaging>jar</packaging>
+    <repositories>
+        <repository>
+            <id>citec-releases</id>
+            <name>CITEC Maven Repository Server</name>
+            <url>https://mvn.cit-ec.de/nexus/content/repositories/releases/</url>
+            <layout>default</layout>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+        </repository>
+    </repositories>
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<maven.compiler.source>1.8</maven.compiler.source>
@@ -41,19 +52,19 @@
 			<version>${rsb.version}</version>
 		</dependency>
 		<dependency>
-			<groupId>org.dc.bco</groupId>
+			<groupId>org.openbase.bco</groupId>
 			<artifactId>dal.remote</artifactId>
 			<version>${dal.version}</version>
 			<type>jar</type>
 		</dependency>
 		<dependency>
-			<groupId>org.dc.bco</groupId>
+			<groupId>org.openbase.bco</groupId>
 			<artifactId>registry.device.remote</artifactId>
 			<version>${rm.version}</version>
 			<type>jar</type>
 		</dependency>
 		<dependency>
-			<groupId>org.dc.bco</groupId>
+			<groupId>org.openbase.bco</groupId>
 			<artifactId>registry.location.remote</artifactId>
 			<version>${rm.version}</version>
 			<type>jar</type>
@@ -61,7 +72,7 @@
 		<dependency>
 			<groupId>de.citec.csra</groupId>
 			<artifactId>arbitration-service</artifactId>
-			<version>[0.3,)</version>
+			<version>0.8-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>de.citec.csra</groupId>
