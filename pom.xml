@@ -3,16 +3,20 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>de.citec.csra</groupId>
 	<artifactId>highlight-service</artifactId>
-	<version>0.3-SNAPSHOT</version>
+	<version>0.3</version>
 	<packaging>jar</packaging>	
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<maven.compiler.source>1.8</maven.compiler.source>
 		<maven.compiler.target>1.8</maven.compiler.target>
 		<rsb.version>[0.13,0.14-SNAPSHOT)</rsb.version>
+		<rst.version>[0.13,0.13.268]</rst.version>
+		<arb.version>[0.3,0.8)</arb.version>
+		<hau.version>[0.3,0.4)</hau.version>
 		<jul.version>[1.1,1.2-SNAPSHOT)</jul.version>
 		<rm.version>[1.1,1.2-SNAPSHOT)</rm.version>
 		<dal.version>[1.1,1.2-SNAPSHOT)</dal.version>
+		
 	</properties>
 	<dependencies>
 		<dependency>
@@ -38,7 +42,7 @@
 		<dependency>
 			<groupId>rsb</groupId>
 			<artifactId>rst-sandbox-csra</artifactId>
-			<version>${rsb.version}</version>
+			<version>${rst.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.dc.bco</groupId>
@@ -61,12 +65,12 @@
 		<dependency>
 			<groupId>de.citec.csra</groupId>
 			<artifactId>arbitration-service</artifactId>
-			<version>[0.3,)</version>
+			<version>${arb.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>de.citec.csra</groupId>
 			<artifactId>ha-utils</artifactId>
-			<version>[0.3,)</version>
+			<version>${hau.version}</version>
 		</dependency>
 	</dependencies>
 	<build>
