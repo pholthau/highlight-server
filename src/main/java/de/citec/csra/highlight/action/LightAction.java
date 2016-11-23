@@ -58,17 +58,21 @@ public class LightAction implements Callable<Boolean> {
 		this.interrupt_wait = interrupt_wait;
 		try {
 			this.units = Remotes.get().getUnitRegistry().getUnitConfigsByLabel(cfg);
-			for (UnitConfig unit : units) {
+			boolean initialized = false;
+			loop: for (UnitConfig unit : units) {
 				switch (unit.getType()) {
 					case COLORABLE_LIGHT:
-						Remotes.get().getColorableLight(unit);
-						break;
 					case DIMMER:
-						Remotes.get().getDimmableLight(unit);
-						break;
+						Remotes.get().getColorableLight(unit);
+						initialized = true;
+						break loop;
 					default:
-						throw new IllegalArgumentException("unsupported type '" + unit.getLabel() + "'");
+						break;
+
 				}
+			}
+			if (!initialized) {
+				throw new IllegalArgumentException("no light with label '" + cfg + "' available");
 			}
 		} catch (InstantiationException | InterruptedException | CouldNotPerformException | IllegalArgumentException ex) {
 			throw new InitializeException(ex);
@@ -130,7 +134,7 @@ public class LightAction implements Callable<Boolean> {
 							log.log(Level.WARNING, "Could not wait for method ''{0}'' at unit ''{1}'', no time left ({2}ms)", new Object[]{"setColor", unit.getLabel(), remaining});
 							success = false;
 						}
-						
+
 						log.log(Level.INFO, "Reset unit power ''{0}'' to ''{1}''.", new Object[]{unit.getLabel(), states.get(unit)});
 						Future<?> power = light.setPowerState(build(states.get(unit)));
 						if (remaining > 0) {
