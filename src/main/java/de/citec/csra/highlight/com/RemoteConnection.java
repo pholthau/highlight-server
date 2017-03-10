@@ -7,11 +7,12 @@ package de.citec.csra.highlight.com;
 
 /**
  *
- * @author Patrick Holthaus
- * (<a href=mailto:patrick.holthaus@uni-bielefeld.de>patrick.holthaus@uni-bielefeld.de</a>)
+ * @author pholthau
  */
-public interface Resetable<I, A> {
-
-	public I getResetInterface();
-	public A getResetArgument();
+public interface RemoteConnection<T> {
+	
+	public void send(T argument) throws Exception;
+	
+	public String getAddress();
+	
 }

@@ -5,9 +5,9 @@
  */
 package de.citec.csra.highlight;
 
+//import de.citec.csra.task.srv.TaskServer;
 import de.citec.csra.task.srv.TaskServer;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import de.citec.csra.highlight.cfg.Defaults;
 import org.apache.commons.cli.BasicParser;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
@@ -18,6 +18,7 @@ import rsb.InitializeException;
 import rsb.RSBException;
 import rsb.converter.DefaultConverterRepository;
 import rsb.converter.ProtocolBufferConverter;
+import rst.communicationpatterns.TaskStateType.TaskState;
 import rst.geometry.SphericalDirectionFloatType.SphericalDirectionFloat;
 import rst.hri.HighlightTargetType.HighlightTarget;
 import rst.spatial.PanTiltAngleType.PanTiltAngle;
@@ -30,9 +31,10 @@ import rst.spatial.PanTiltAngleType.PanTiltAngle;
 public class HighlightService {
 
 	private static String scope = "/home/highlight";
-	private final static Logger LOG = Logger.getLogger(HighlightService.class.getName());
+	private final static String SCOPEVAR = "SCOPE_HIGHLIGHT";
 
 	static {
+		DefaultConverterRepository.getDefaultConverterRepository().addConverter(new ProtocolBufferConverter<>(TaskState.getDefaultInstance()));
 		DefaultConverterRepository.getDefaultConverterRepository().addConverter(new ProtocolBufferConverter<>(HighlightTarget.getDefaultInstance()));
 		DefaultConverterRepository.getDefaultConverterRepository().addConverter(new ProtocolBufferConverter<>(SphericalDirectionFloat.getDefaultInstance()));
 		DefaultConverterRepository.getDefaultConverterRepository().addConverter(new ProtocolBufferConverter<>(PanTiltAngle.getDefaultInstance()));
@@ -59,17 +61,19 @@ public class HighlightService {
 			System.exit(0);
 		}
 
+		if (System.getenv().containsKey(SCOPEVAR)) {
+			scope = System.getenv(SCOPEVAR);
+		}
+
 		String s = cmd.getOptionValue("scope");
 		if (s != null) {
 			scope = s;
 		}
 		scope = scope.replaceAll("/$", "");
 
-		TaskServer server = new TaskServer(new AsyncHighlighter(scope));
-		server.activate();
-		LOG.log(Level.INFO, "Activated higlight service at scope ''{0}''", scope);
+		Defaults.loadDefaults();
 
-		server.waitForShutdown();
-		server.deactivate();
+		TaskServer server = new TaskServer(scope, new HighlightTaskHandler());
+		server.execute();
 	}
 }
