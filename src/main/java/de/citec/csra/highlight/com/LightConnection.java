@@ -6,7 +6,7 @@
 package de.citec.csra.highlight.com;
 
 import de.citec.csra.highlight.com.LightConnection.Arg;
-import de.citec.csra.parse.Remotes;
+import de.citec.csra.init.Remotes;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.openbase.bco.dal.lib.layer.unit.ColorableLight;
