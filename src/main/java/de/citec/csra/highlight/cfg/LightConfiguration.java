@@ -17,7 +17,7 @@ import rsb.InitializeException;
 public class LightConfiguration extends HighlightTarget {
 
 	public LightConfiguration(String name) throws InitializeException {
-		LightConnection li = new LightConnection(name);
+		LightConnection li = new LightConnection(name, 500);
 		super.setExecution(li, ACTIVE);
 		super.setReset(li, RESET, 100);
 	}
