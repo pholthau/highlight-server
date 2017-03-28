@@ -7,13 +7,13 @@ package de.citec.csra.highlight;
 
 import de.citec.csra.allocation.cli.ExecutableResource;
 import static de.citec.csra.allocation.cli.ExecutableResource.Completion.RETAIN;
+import de.citec.csra.highlight.cfg.Highlightable;
 import java.util.concurrent.ExecutionException;
 import java.util.logging.Logger;
+import rsb.RSBException;
 import static rst.communicationpatterns.ResourceAllocationType.ResourceAllocation.Initiator.SYSTEM;
 import static rst.communicationpatterns.ResourceAllocationType.ResourceAllocation.Policy.MAXIMUM;
 import static rst.communicationpatterns.ResourceAllocationType.ResourceAllocation.Priority.NORMAL;
-import de.citec.csra.highlight.cfg.Highlightable;
-import rsb.RSBException;
 
 /**
  *
@@ -25,6 +25,7 @@ public class HighlightExecutable extends ExecutableResource {
 	private final static long OVERHEAD = 100;
 	private final static Logger LOG = Logger.getLogger(HighlightExecutable.class.getName());
 	private final Highlightable cfg;
+	private final long duration;
 
 	public HighlightExecutable(Highlightable cfg, long duration) throws RSBException {
 		super("exec[" + cfg.toString() + "]",
@@ -36,6 +37,7 @@ public class HighlightExecutable extends ExecutableResource {
 				RETAIN,
 				cfg.getInterfaces().toArray(new String[cfg.getInterfaces().size()]));
 		this.cfg = cfg;
+		this.duration = duration;
 	}
 
 	@Override
@@ -50,7 +52,7 @@ public class HighlightExecutable extends ExecutableResource {
 
 	@Override
 	public String toString() {
-		return "exec[" + cfg.toString() + "]";
+		return "exec[" + cfg.toString() + ":" + duration + "]";
 	}
-	
+
 }
