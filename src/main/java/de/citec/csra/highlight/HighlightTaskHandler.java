@@ -5,23 +5,23 @@
  */
 package de.citec.csra.highlight;
 
-import de.citec.csra.highlight.cfg.TargetObject;
 import de.citec.csra.allocation.cli.ExecutableResource;
 import de.citec.csra.highlight.cfg.Defaults;
+import de.citec.csra.highlight.cfg.Highlightable;
+import de.citec.csra.highlight.cfg.TargetObject;
 import de.citec.csra.rst.parse.EnumParser;
 import de.citec.csra.rst.parse.HighlightTargetParser;
-import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import rst.hri.HighlightTargetType.HighlightTarget;
-import rst.hri.HighlightTargetType.HighlightTarget.Modality;
-import de.citec.csra.highlight.cfg.Highlightable;
 import de.citec.csra.task.srv.AbstractTaskHandler;
 import de.citec.csra.task.srv.ExecutableResourceTask;
-import rsb.RSBException;
 import de.citec.csra.task.srv.LocalTask;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import rsb.RSBException;
+import rst.hri.HighlightTargetType.HighlightTarget;
+import rst.hri.HighlightTargetType.HighlightTarget.Modality;
 
 /**
  *
@@ -56,7 +56,7 @@ public class HighlightTaskHandler extends AbstractTaskHandler {
 		modalities.forEach((m) -> {
 			Highlightable cfg = Defaults.get(tgt, m);
 			try {
-				acts.add(new HighlightExecutable(cfg, hlt.getDuration().getTime()));
+				acts.add(new HighlightExecutable(cfg, hlt.getDuration().getTime()/1000l));
 			} catch (RSBException ex) {
 				Logger.getLogger(HighlightTaskHandler.class.getName()).log(Level.SEVERE, null, ex);
 			}
