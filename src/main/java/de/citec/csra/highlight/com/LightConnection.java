@@ -7,6 +7,7 @@ package de.citec.csra.highlight.com;
 
 import de.citec.csra.highlight.com.LightConnection.Arg;
 import de.citec.csra.init.Remotes;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.openbase.bco.dal.lib.layer.unit.ColorableLight;
@@ -16,7 +17,7 @@ import org.openbase.jul.extension.rsb.scope.ScopeGenerator;
 import rsb.InitializeException;
 import rsb.converter.DefaultConverterRepository;
 import rsb.converter.ProtocolBufferConverter;
-import rst.communicationpatterns.TaskStateType;
+import rst.communicationpatterns.TaskStateType.TaskState;
 import rst.domotic.state.PowerStateType.PowerState;
 import rst.domotic.state.PowerStateType.PowerState.State;
 import static rst.domotic.state.PowerStateType.PowerState.State.ON;
@@ -30,7 +31,7 @@ import rst.vision.HSBColorType.HSBColor;
 public class LightConnection implements RemoteConnection<Arg> {
 
 	static {
-		DefaultConverterRepository.getDefaultConverterRepository().addConverter(new ProtocolBufferConverter<>(TaskStateType.TaskState.getDefaultInstance()));
+		DefaultConverterRepository.getDefaultConverterRepository().addConverter(new ProtocolBufferConverter<>(TaskState.getDefaultInstance()));
 	}
 	private final static Logger LOG = Logger.getLogger(LightConnection.class.getName());
 
@@ -45,28 +46,26 @@ public class LightConnection implements RemoteConnection<Arg> {
 
 	private final HSBColor A_COLOR = HSBColor.newBuilder().setHue(210).setSaturation(100).setBrightness(100).build();
 
-	public LightConnection(String cfg) throws InitializeException {
-//		try {
-//			List<UnitConfig> units = Remotes.get().getUnitRegistry().getUnitConfigsByLabel(cfg);
-//			loop:
-//			for (UnitConfig u : units) {
-//				switch (u.getType()) {
-//					case COLORABLE_LIGHT:
-//					case DIMMER:
-//						this.unit = u;
-//						break loop;
-//					default:
-//						break;
-//
-//				}
-//			}
-//			if (this.unit == null) {
-//				throw new IllegalArgumentException("no light with label '" + cfg + "' available");
-//			}
-//		} catch (InstantiationException | InterruptedException | CouldNotPerformException | IllegalArgumentException ex) {
-//			throw new InitializeException(ex);
-//		}
-		this.unit = UnitConfig.getDefaultInstance();
+	public LightConnection(String cfg, long timeout) throws InitializeException {
+		try {
+			List<UnitConfig> units = Remotes.get().getUnitRegistry(timeout).getUnitConfigsByLabel(cfg);
+			loop:
+			for (UnitConfig u : units) {
+				switch (u.getType()) {
+					case COLORABLE_LIGHT:
+					case DIMMER:
+						this.unit = u;
+						break loop;
+					default:
+						break;
+				}
+			}
+			if (this.unit == null) {
+				throw new IllegalArgumentException("no light with label '" + cfg + "' available");
+			}
+		} catch (InstantiationException | InterruptedException | CouldNotPerformException | IllegalArgumentException ex) {
+			throw new InitializeException(ex);
+		}
 	}
 
 	@Override
