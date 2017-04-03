@@ -87,8 +87,12 @@ public class LightConnection implements RemoteConnection<Arg> {
 
 						LOG.log(Level.INFO, "Reset light color ''{0}'' to ''{1}''.", new Object[]{unit.getLabel(), originalColor.toString().replaceAll("\n", " ")});
 						light.setColor(originalColor);
-						LOG.log(Level.INFO, "Reset light power ''{0}'' to ''{1}''.", new Object[]{unit.getLabel(), originalState.toString().replaceAll("\n", " ")});
-						light.setPowerState(PowerState.newBuilder().setValue(originalState).build());
+						if (!unit.getLabel().contains("50")) {
+							LOG.log(Level.INFO, "Reset light power ''{0}'' to ''{1}''.", new Object[]{unit.getLabel(), originalState.toString().replaceAll("\n", " ")});
+							light.setPowerState(PowerState.newBuilder().setValue(originalState).build());
+						} else {
+							LOG.log(Level.WARNING, "DO NOT reset light power ''{0}''.", new Object[]{unit.getLabel(), originalState.toString().replaceAll("\n", " ")});
+						}
 						break;
 				}
 				break;
