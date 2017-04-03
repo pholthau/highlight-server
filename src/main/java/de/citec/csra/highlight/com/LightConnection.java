@@ -81,6 +81,7 @@ public class LightConnection implements RemoteConnection<Arg> {
 
 						LOG.log(Level.INFO, "Set light color ''{0}'' to ''{1}''.", new Object[]{unit.getLabel(), A_COLOR.toString().replaceAll("\n", " ")});
 						light.setColor(A_COLOR);
+						break;
 					//implies power state on
 					case RESET:
 
@@ -88,6 +89,7 @@ public class LightConnection implements RemoteConnection<Arg> {
 						light.setColor(originalColor);
 						LOG.log(Level.INFO, "Reset light power ''{0}'' to ''{1}''.", new Object[]{unit.getLabel(), originalState.toString().replaceAll("\n", " ")});
 						light.setPowerState(PowerState.newBuilder().setValue(originalState).build());
+						break;
 				}
 				break;
 			case DIMMER:
@@ -97,9 +99,11 @@ public class LightConnection implements RemoteConnection<Arg> {
 						originalState = dimmer.getPowerState().getValue();
 						LOG.log(Level.INFO, "Set dimmer power ''{0}'' to ''{1}''.", new Object[]{unit.getLabel(), ON.toString().replaceAll("\n", " ")});
 						dimmer.setPowerState(PowerState.newBuilder().setValue(ON).build());
+						break;
 					case RESET:
 						LOG.log(Level.INFO, "Reset dimmer power ''{0}'' to ''{1}''.", new Object[]{unit.getLabel(), originalState.toString().replaceAll("\n", " ")});
 						dimmer.setPowerState(PowerState.newBuilder().setValue(originalState).build());
+						break;
 				}
 				break;
 			default:
