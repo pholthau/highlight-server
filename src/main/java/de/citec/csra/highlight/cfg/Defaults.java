@@ -5,19 +5,18 @@
  */
 package de.citec.csra.highlight.cfg;
 
+import static de.citec.csra.highlight.cfg.TargetObject.*;
 import de.citec.csra.highlight.com.InformerConnection;
 import de.citec.csra.highlight.com.MethodCallConnection;
-import static de.citec.csra.highlight.cfg.TargetObject.CUPBOARD1;
 import java.util.EnumMap;
 import java.util.Map;
-import static rst.hri.HighlightTargetType.HighlightTarget.Modality.*;
-import static de.citec.csra.highlight.cfg.TargetObject.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import rsb.InitializeException;
 import rsb.RSBException;
 import rst.geometry.SphericalDirectionFloatType.SphericalDirectionFloat;
 import rst.hri.HighlightTargetType.HighlightTarget.Modality;
+import static rst.hri.HighlightTargetType.HighlightTarget.Modality.*;
 
 /**
  *
@@ -77,7 +76,7 @@ public class Defaults {
 						spot = direction(84, 33);
 						break;
 					case SURFACE:
-						alt = "MediaHue";
+						alt = "CeilingWindowLamp";
 						gaze = direction(-55, -15);
 						gst = "all pointing_screen";
 						snd = "Waikiki.ogg";
@@ -119,7 +118,7 @@ public class Defaults {
 						spot = direction(335, 70);
 						break;
 					case WATER:
-						alt = "CeilingLamp_1";
+						alt = "CeilingLamp 1";
 						gaze = direction(70, -10);
 						gst = "all pointing_kitchen";
 						snd = "Waikiki.ogg";
