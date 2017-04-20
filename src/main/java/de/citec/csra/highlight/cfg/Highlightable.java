@@ -12,7 +12,7 @@ import java.util.Collection;
  * @author pholthau
  */
 public interface Highlightable {
-
+	
 	public void highlight(long duration) throws Exception;
 	public Collection<String> getInterfaces();
 

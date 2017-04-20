@@ -5,11 +5,12 @@
  */
 package de.citec.csra.highlight.cfg;
 
+import de.citec.csra.highlight.com.RemoteConnection;
+import static de.citec.csra.rst.util.StringRepresentation.shortString;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import de.citec.csra.highlight.com.RemoteConnection;
 
 /**
  *
@@ -21,6 +22,10 @@ public class HighlightTarget implements Highlightable, Configurable {
 
 	private RemoteConnection exec;
 	private Object execArg;
+
+	private RemoteConnection init;
+	private Object initArg;
+	private long initDelay;
 
 	private RemoteConnection prepare;
 	private Object prepareArg;
@@ -35,17 +40,25 @@ public class HighlightTarget implements Highlightable, Configurable {
 	private long shutdownDelay;
 
 	@Override
-	public <T> HighlightTarget setExecution(RemoteConnection<T> ri, T argument) {
-		this.exec = ri;
-		this.execArg = argument;
+	public <I> HighlightTarget setInit(RemoteConnection<I> ri, I argument, long delay) {
+		this.init = ri;
+		this.initArg = argument;
+		this.initDelay = delay;
 		return this;
 	}
-	
+
 	@Override
 	public <P> HighlightTarget setPrepare(RemoteConnection<P> ri, P argument, long delay) {
 		this.prepare = ri;
 		this.prepareArg = argument;
 		this.prepareDelay = delay;
+		return this;
+	}
+
+	@Override
+	public <T> HighlightTarget setExecution(RemoteConnection<T> ri, T argument) {
+		this.exec = ri;
+		this.execArg = argument;
 		return this;
 	}
 
@@ -67,15 +80,31 @@ public class HighlightTarget implements Highlightable, Configurable {
 
 	@Override
 	public void highlight(long duration) throws Exception {
-		prepare();
-		execute(duration - (this.prepareDelay + this.resetDelay + this.shutdownDelay));
-		reset();
-		shutdown();
+		init();
+		try {
+			prepare();
+			execute(duration - (this.initDelay + this.prepareDelay + this.resetDelay + this.shutdownDelay));
+		} catch (InterruptedException ex) {
+			LOG.log(Level.WARNING, "Execution interrupted, shutting down immediately.", ex);
+			this.resetDelay = 0;
+			this.shutdownDelay = 0;
+		} finally {
+			reset();
+			shutdown();
+		}
+	}
+
+	private void init() throws Exception {
+		if (this.init != null) {
+			LOG.log(Level.INFO, "Sending to ''{0}'' with argument ''{1}'' for initialization ({2}ms).", new Object[]{init.getAddress(), shortString(initArg), initDelay});
+			this.init.send(this.initArg);
+			Thread.sleep(this.initDelay);
+		}
 	}
 
 	private void prepare() throws Exception {
 		if (this.prepare != null) {
-			LOG.log(Level.INFO, "Sending to ''{0}'' with argument ''{1}'' for preparation.", new Object[]{prepare.getAddress(), prepareArg != null ? prepareArg.toString().replaceAll("\n", " ") : prepareArg});
+			LOG.log(Level.INFO, "Sending to ''{0}'' with argument ''{1}'' for preparation ({2}ms).", new Object[]{prepare.getAddress(), shortString(prepareArg), prepareDelay});
 			this.prepare.send(this.prepareArg);
 			Thread.sleep(this.prepareDelay);
 		}
@@ -83,7 +112,7 @@ public class HighlightTarget implements Highlightable, Configurable {
 
 	private void execute(long duration) throws Exception {
 		if (this.exec != null) {
-			LOG.log(Level.INFO, "Sending to ''{0}'' with argument ''{1}'' as a target.", new Object[]{exec.getAddress(), execArg != null ? execArg.toString().replaceAll("\n", " ") : execArg});
+			LOG.log(Level.INFO, "Sending to ''{0}'' with argument ''{1}'' as a target ({2}ms).", new Object[]{exec.getAddress(), shortString(execArg), duration});
 			this.exec.send(this.execArg);
 			Thread.sleep(duration);
 		}
@@ -91,7 +120,7 @@ public class HighlightTarget implements Highlightable, Configurable {
 
 	private void reset() throws Exception {
 		if (this.reset != null) {
-			LOG.log(Level.INFO, "Sending to ''{0}'' with argument ''{1}'' for reset.", new Object[]{reset.getAddress(), resetArg != null ? resetArg.toString().replaceAll("\n", " ") : resetArg});
+			LOG.log(Level.INFO, "Sending to ''{0}'' with argument ''{1}'' for reset ({2}ms).", new Object[]{reset.getAddress(), shortString(resetArg), resetDelay});
 			this.reset.send(this.resetArg);
 			Thread.sleep(this.resetDelay);
 		}
@@ -99,7 +128,7 @@ public class HighlightTarget implements Highlightable, Configurable {
 
 	private void shutdown() throws Exception {
 		if (this.shutdown != null) {
-			LOG.log(Level.INFO, "Sending to ''{0}'' with argument ''{1}'' for shutdown.", new Object[]{shutdown.getAddress(), shutdownArg != null ? shutdownArg.toString().replaceAll("\n", " ") : shutdownArg});
+			LOG.log(Level.INFO, "Sending to ''{0}'' with argument ''{1}'' for shutdown ({2}ms).", new Object[]{shutdown.getAddress(), shortString(shutdownArg), shutdownDelay});
 			this.shutdown.send(this.shutdownArg);
 			Thread.sleep(this.shutdownDelay);
 		}
@@ -125,6 +154,6 @@ public class HighlightTarget implements Highlightable, Configurable {
 
 	@Override
 	public String toString() {
-		return getClass().getSimpleName() + "[" + (this.exec != null ? this.exec.getAddress() : "null") + "]";
+		return getClass().getSimpleName() + "[" + shortString(exec.getAddress()) + "]";
 	}
 }
