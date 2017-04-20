@@ -17,9 +17,6 @@ import org.openbase.bco.dal.remote.unit.DimmerRemote;
 import org.openbase.jul.exception.CouldNotPerformException;
 import org.openbase.jul.extension.rsb.scope.ScopeGenerator;
 import rsb.InitializeException;
-import rsb.converter.DefaultConverterRepository;
-import rsb.converter.ProtocolBufferConverter;
-import rst.communicationpatterns.TaskStateType.TaskState;
 import rst.domotic.state.PowerStateType.PowerState;
 import rst.domotic.state.PowerStateType.PowerState.State;
 import static rst.domotic.state.PowerStateType.PowerState.State.OFF;
@@ -33,9 +30,6 @@ import rst.vision.HSBColorType.HSBColor;
  */
 public class LightConnection implements RemoteConnection<Stage> {
 
-	static {
-		DefaultConverterRepository.getDefaultConverterRepository().addConverter(new ProtocolBufferConverter<>(TaskState.getDefaultInstance()));
-	}
 	private final static Logger LOG = Logger.getLogger(LightConnection.class.getName());
 
 	private final long timeout;
