@@ -85,7 +85,7 @@ public class HighlightTarget implements Highlightable, Configurable {
 			prepare();
 			execute(duration - (this.initDelay + this.prepareDelay + this.resetDelay + this.shutdownDelay));
 		} catch (InterruptedException ex) {
-			LOG.log(Level.WARNING, "Execution interrupted, shutting down immediately.", ex);
+			LOG.log(Level.WARNING, "Execution interrupted, shutting down immediately.");
 			this.resetDelay = 0;
 			this.shutdownDelay = 0;
 		} finally {
