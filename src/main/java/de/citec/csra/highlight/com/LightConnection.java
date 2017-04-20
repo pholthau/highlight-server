@@ -5,9 +5,11 @@
  */
 package de.citec.csra.highlight.com;
 
-import de.citec.csra.highlight.com.LightConnection.Arg;
+import de.citec.csra.highlight.cfg.Configurable.Stage;
 import de.citec.csra.init.Remotes;
+import static de.citec.csra.rst.util.StringRepresentation.shortString;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.openbase.bco.dal.lib.layer.unit.ColorableLight;
@@ -20,6 +22,7 @@ import rsb.converter.ProtocolBufferConverter;
 import rst.communicationpatterns.TaskStateType.TaskState;
 import rst.domotic.state.PowerStateType.PowerState;
 import rst.domotic.state.PowerStateType.PowerState.State;
+import static rst.domotic.state.PowerStateType.PowerState.State.OFF;
 import static rst.domotic.state.PowerStateType.PowerState.State.ON;
 import rst.domotic.unit.UnitConfigType.UnitConfig;
 import rst.vision.HSBColorType.HSBColor;
@@ -28,25 +31,23 @@ import rst.vision.HSBColorType.HSBColor;
  *
  * @author pholthau
  */
-public class LightConnection implements RemoteConnection<Arg> {
+public class LightConnection implements RemoteConnection<Stage> {
 
 	static {
 		DefaultConverterRepository.getDefaultConverterRepository().addConverter(new ProtocolBufferConverter<>(TaskState.getDefaultInstance()));
 	}
 	private final static Logger LOG = Logger.getLogger(LightConnection.class.getName());
 
+	private final long timeout;
 	private UnitConfig unit;
 	private State originalState;
 	private HSBColor originalColor;
 
-	public enum Arg {
-		ACTIVE,
-		RESET
-	}
-
 	private final HSBColor A_COLOR = HSBColor.newBuilder().setHue(210).setSaturation(100).setBrightness(100).build();
+	private final HSBColor B_COLOR = HSBColor.newBuilder().setHue(180).setSaturation(100).setBrightness(100).build();
 
 	public LightConnection(String cfg, long timeout) throws InitializeException {
+		this.timeout = timeout;
 		try {
 			List<UnitConfig> units = Remotes.get().getUnitRegistry(timeout).getUnitConfigsByLabel(cfg);
 			loop:
@@ -69,44 +70,53 @@ public class LightConnection implements RemoteConnection<Arg> {
 	}
 
 	@Override
-	public void send(Arg argument) throws Exception {
-		Arg arg = (Arg) argument;
+	public void send(Stage argument) throws Exception {
+
 		switch (unit.getType()) {
 			case COLORABLE_LIGHT:
-				ColorableLight light = Remotes.get().getColorableLight(unit, 500);
-				switch (arg) {
-					case ACTIVE:
-						originalState = light.getPowerState().getValue();
-						originalColor = light.getHSBColor();
-
-						LOG.log(Level.INFO, "Set light color ''{0}'' to ''{1}''.", new Object[]{unit.getLabel(), A_COLOR.toString().replaceAll("\n", " ")});
-						light.setColor(A_COLOR);
+				ColorableLight light = Remotes.get().getColorableLight(unit, timeout);
+				switch (argument) {
+					case INIT:
 						break;
-					//implies power state on
+					case PREPARE:
+						originalState = light.getPowerState().getValue();
+						LOG.log(Level.INFO, "Storing light power ''{0}'' as ''{1}''.", new Object[]{unit.getLabel(), shortString(originalState)});
+						originalColor = light.getHSBColor();
+						LOG.log(Level.INFO, "Storing light color ''{0}'' as ''{1}''.", new Object[]{unit.getLabel(), shortString(originalColor)});
+						LOG.log(Level.INFO, "Set light color ''{0}'' to ''{1}''.", new Object[]{unit.getLabel(), shortString(A_COLOR)});
+						light.setColor(B_COLOR).get(timeout, TimeUnit.MILLISECONDS);
+						break;
+					case EXEC:
+						LOG.log(Level.INFO, "Set light color ''{0}'' to ''{1}''.", new Object[]{unit.getLabel(), shortString(A_COLOR)});
+						light.setColor(A_COLOR).get(timeout, TimeUnit.MILLISECONDS);
+						//implies power state on
+						break;
 					case RESET:
-
-						LOG.log(Level.INFO, "Reset light color ''{0}'' to ''{1}''.", new Object[]{unit.getLabel(), originalColor.toString().replaceAll("\n", " ")});
-						light.setColor(originalColor);
-						if (!unit.getLabel().contains("50")) {
-							LOG.log(Level.INFO, "Reset light power ''{0}'' to ''{1}''.", new Object[]{unit.getLabel(), originalState.toString().replaceAll("\n", " ")});
-							light.setPowerState(PowerState.newBuilder().setValue(originalState).build());
-						} else {
-							LOG.log(Level.WARNING, "DO NOT reset light power ''{0}''.", new Object[]{unit.getLabel(), originalState.toString().replaceAll("\n", " ")});
-						}
+						LOG.log(Level.INFO, "Reset light color ''{0}'' to ''{1}''.", new Object[]{unit.getLabel(), shortString(originalColor)});
+						light.setColor(originalColor).get(timeout, TimeUnit.MILLISECONDS);
+						LOG.log(Level.INFO, "Reset light power ''{0}'' to ''{1}''.", new Object[]{unit.getLabel(), shortString(originalState)});
+						light.setPowerState(PowerState.newBuilder().setValue(originalState).build()).get(timeout, TimeUnit.MILLISECONDS);
 						break;
 				}
 				break;
 			case DIMMER:
-				DimmerRemote dimmer = Remotes.get().getDimmableLight(unit, 500);
-				switch (arg) {
-					case ACTIVE:
+				DimmerRemote dimmer = Remotes.get().getDimmableLight(unit, timeout);
+				switch (argument) {
+					case INIT:
+						break;
+					case PREPARE:
 						originalState = dimmer.getPowerState().getValue();
-						LOG.log(Level.INFO, "Set dimmer power ''{0}'' to ''{1}''.", new Object[]{unit.getLabel(), ON.toString().replaceAll("\n", " ")});
+						LOG.log(Level.INFO, "Storing dimmer power ''{0}'' as ''{1}''.", new Object[]{unit.getLabel(), shortString(originalState)});
+						LOG.log(Level.INFO, "Set dimmer power ''{0}'' to ''{1}''.", new Object[]{unit.getLabel(), shortString(OFF)});
+						dimmer.setPowerState(PowerState.newBuilder().setValue(OFF).build());
+						break;
+					case EXEC:
+						LOG.log(Level.INFO, "Set dimmer power ''{0}'' to ''{1}''.", new Object[]{unit.getLabel(), shortString(ON)});
 						dimmer.setPowerState(PowerState.newBuilder().setValue(ON).build());
 						break;
 					case RESET:
-						LOG.log(Level.INFO, "Reset dimmer power ''{0}'' to ''{1}''.", new Object[]{unit.getLabel(), originalState.toString().replaceAll("\n", " ")});
-						dimmer.setPowerState(PowerState.newBuilder().setValue(originalState).build());
+						LOG.log(Level.INFO, "Reset dimmer power ''{0}'' to ''{1}''.", new Object[]{unit.getLabel(), shortString(originalState)});
+						dimmer.setPowerState(PowerState.newBuilder().setValue(originalState).build()).get(timeout, TimeUnit.MILLISECONDS);
 						break;
 				}
 				break;
