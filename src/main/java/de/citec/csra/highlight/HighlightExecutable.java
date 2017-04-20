@@ -11,7 +11,7 @@ import de.citec.csra.highlight.cfg.Highlightable;
 import java.util.concurrent.ExecutionException;
 import java.util.logging.Logger;
 import rsb.RSBException;
-import static rst.communicationpatterns.ResourceAllocationType.ResourceAllocation.Initiator.SYSTEM;
+import static rst.communicationpatterns.ResourceAllocationType.ResourceAllocation.Initiator.HUMAN;
 import static rst.communicationpatterns.ResourceAllocationType.ResourceAllocation.Policy.MAXIMUM;
 import static rst.communicationpatterns.ResourceAllocationType.ResourceAllocation.Priority.NORMAL;
 
@@ -31,7 +31,7 @@ public class HighlightExecutable extends ExecutableResource {
 		super("exec[" + cfg.toString() + "]",
 				MAXIMUM,
 				NORMAL,
-				SYSTEM,
+				HUMAN,
 				0,
 				duration + OVERHEAD,
 				RETAIN,
