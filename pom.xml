@@ -20,11 +20,11 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<maven.compiler.source>1.8</maven.compiler.source>
 		<maven.compiler.target>1.8</maven.compiler.target>
-		<rsb.version>[0.15,0.16-SNAPSHOT)</rsb.version>
-		<dal.version>[1.3,1.4-SNAPSHOT)</dal.version>
-		<rta.version>[1.0,1.1-SNAPSHOT)</rta.version>
-		<rsu.version>[0.1,0.2-SNAPSHOT)</rsu.version>
-		<hau.version>[0.6,0.7-SNAPSHOT)</hau.version>
+		<rsb.version>[0.15,)</rsb.version>
+		<dal.version>[1.3,)</dal.version>
+		<rta.version>[1.0,)</rta.version>
+		<rsu.version>[0.1,)</rsu.version>
+		<hau.version>[0.6,)</hau.version>
 	</properties>
 	<dependencies>
 		<dependency>
