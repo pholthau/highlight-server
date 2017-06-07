@@ -68,9 +68,8 @@ public class LightConnection implements RemoteConnection<Stage> {
 	}
 
 	public LightConnection(String cfg) throws InterruptedException {
-		init();
 		this.cfg = cfg;
-
+		init();
 	}
 
 	@Override
