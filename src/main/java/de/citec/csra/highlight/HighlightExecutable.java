@@ -36,8 +36,7 @@ public class HighlightExecutable extends ExecutableResource {
 				0,
 				duration + OVERHEAD,
 				RETAIN,
-				cfg.getInterfaces().stream().map(r -> "highlight:" + r).toArray(s -> new String[s]));
-//				cfg.getInterfaces().toArray(new String[cfg.getInterfaces().size()]));
+				cfg.getInterfaces().toArray(new String[cfg.getInterfaces().size()]));
 		this.cfg = cfg;
 		this.duration = duration;
 	}
