@@ -10,7 +10,6 @@ import static de.citec.csra.highlight.cfg.Configurable.Stage.INIT;
 import static de.citec.csra.highlight.cfg.Configurable.Stage.PREPARE;
 import static de.citec.csra.highlight.cfg.Configurable.Stage.RESET;
 import de.citec.csra.highlight.com.LightConnection;
-import rsb.InitializeException;
 
 /**
  *
@@ -18,8 +17,8 @@ import rsb.InitializeException;
  */
 public class LightConfiguration extends HighlightTarget {
 
-	public LightConfiguration(String name) throws InitializeException {
-		LightConnection li = new LightConnection(name, 1000);
+	public LightConfiguration(String name) throws InterruptedException {
+		LightConnection li = new LightConnection(name);
 		super.setInit(li, INIT, 50);
 		super.setPrepare(li, PREPARE, 500);
 		super.setExecution(li, EXEC);

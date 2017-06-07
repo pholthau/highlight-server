@@ -12,7 +12,6 @@ import java.util.EnumMap;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import rsb.InitializeException;
 import rsb.RSBException;
 import rst.geometry.SphericalDirectionFloatType.SphericalDirectionFloat;
 import rst.hri.HighlightTargetType.HighlightTarget.Modality;
@@ -158,7 +157,7 @@ public class Defaults {
 					case AMBIENT_LIGHT:
 						try {
 							register(t, m, new LightConfiguration(alt));
-						} catch (InitializeException ex) {
+						} catch (InterruptedException ex) {
 							Logger.getLogger(Defaults.class.getName()).log(Level.SEVERE, null, ex);
 						}
 						break;
