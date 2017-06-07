@@ -56,7 +56,12 @@ public class HighlightTaskHandler extends AbstractTaskHandler {
 		modalities.forEach((m) -> {
 			Highlightable cfg = Defaults.get(tgt, m);
 			try {
-				acts.add(new HighlightExecutable(cfg, hlt.getDuration().getTime()/1000l));
+				String token = ConfigServer.getToken();
+				HighlightExecutable exec = new HighlightExecutable(cfg, hlt.getDuration().getTime()/1000l);
+				if(token != null){
+					exec.getRemote().setToken(token);
+				}
+				acts.add(exec);
 			} catch (RSBException ex) {
 				Logger.getLogger(HighlightTaskHandler.class.getName()).log(Level.SEVERE, null, ex);
 			}

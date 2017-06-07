@@ -17,6 +17,8 @@
 package de.citec.csra.highlight;
 
 import com.google.protobuf.ByteString;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeoutException;
 import rsb.Factory;
 import rsb.Informer;
 import rsb.InitializeException;
@@ -24,6 +26,7 @@ import rsb.RSBException;
 import rsb.converter.ConverterRepository;
 import rsb.converter.DefaultConverterRepository;
 import rsb.converter.ProtocolBufferConverter;
+import rsb.patterns.RemoteServer;
 import rst.communicationpatterns.TaskStateType.TaskState;
 import static rst.communicationpatterns.TaskStateType.TaskState.Origin.SUBMITTER;
 import static rst.communicationpatterns.TaskStateType.TaskState.State.INITIATED;
@@ -34,17 +37,23 @@ import static rst.communicationpatterns.TaskStateType.TaskState.State.INITIATED;
  */
 public class RequestHighlight {
 
-	public static void main(String[] args) throws InitializeException, RSBException, InterruptedException {
+	public static void main(String[] args) throws InitializeException, RSBException, InterruptedException, ExecutionException, TimeoutException {
 		ConverterRepository rep = DefaultConverterRepository.getDefaultConverterRepository();
 		rep.addConverter(new ProtocolBufferConverter<>(TaskState.getDefaultInstance()));
-		Informer i = Factory.getInstance().createInformer("/home/highlight");
+		
+		RemoteServer s = Factory.getInstance().createRemoteServer("/home/highlight/cfg");
+		s.activate();
+		s.call("setToken", "");
+		s.deactivate();
+		
+		Informer i = Factory.getInstance().createInformer("/home/highlight/target");
 		i.activate();
 		TaskState t = TaskState.newBuilder().
 				setOrigin(SUBMITTER).
 				setState(INITIATED).
 				setSerial(0).
 				setWireSchema(ByteString.copyFromUtf8("utf-8-string")).
-				setPayload(ByteString.copyFromUtf8("ENTRANCE,GAZE,5000")).
+				setPayload(ByteString.copyFromUtf8("ENTRANCE,AMBIENT_LIGHT,6000000")).
 				build();
 		i.publish(t);
 		i.deactivate();

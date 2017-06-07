@@ -6,8 +6,12 @@
 package de.citec.csra.highlight;
 
 //import de.citec.csra.task.srv.TaskServer;
-import de.citec.csra.task.srv.TaskServer;
 import de.citec.csra.highlight.cfg.Defaults;
+import de.citec.csra.task.srv.TaskServer;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.apache.commons.cli.BasicParser;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
@@ -30,8 +34,10 @@ import rst.spatial.PanTiltAngleType.PanTiltAngle;
  */
 public class HighlightService {
 
-	private static String scope = "/home/highlight";
+	private static String scope = "/home/highlight/target";
+	private static String cfg = "/home/highlight/cfg";
 	private final static String SCOPEVAR = "SCOPE_HIGHLIGHT";
+	private final static Logger LOG = Logger.getLogger(HighlightService.class.getName());
 
 	static {
 		DefaultConverterRepository.getDefaultConverterRepository().addConverter(new ProtocolBufferConverter<>(TaskState.getDefaultInstance()));
@@ -43,7 +49,8 @@ public class HighlightService {
 	public static void main(String[] args) throws InitializeException, RSBException, InterruptedException, ParseException {
 
 		Options opts = new Options();
-		opts.addOption("scope", true, "RSB scope to listen to.\nDefault: '" + scope + "'");
+		opts.addOption("scope", true, "RSB scope for highlight targets.\nDefault: '" + scope + "'");
+		opts.addOption("server", true, "RSB server for configuration, e.g., tokens.\nDefault: '" + cfg + "'");
 		opts.addOption("help", false, "Print this help and exit");
 
 		String footer = null;
@@ -71,9 +78,32 @@ public class HighlightService {
 		}
 		scope = scope.replaceAll("/$", "");
 
-		Defaults.loadDefaults();
+		String c = cmd.getOptionValue("cfg");
+		if (c != null) {
+			cfg = c;
+		}
+		cfg = cfg.replaceAll("/$", "");
 
-		TaskServer server = new TaskServer(scope, new HighlightTaskHandler());
-		server.execute();
+		Defaults.loadDefaults();
+		ExecutorService exec = Executors.newFixedThreadPool(2);
+
+		exec.submit(() -> {
+			try {
+				ConfigServer cfgServer = new ConfigServer(cfg);
+				cfgServer.execute();
+			} catch (RSBException ex) {
+				LOG.log(Level.SEVERE, "Config server failed", ex);
+			}
+		});
+
+		exec.submit(() -> {
+			try {
+				TaskServer server = new TaskServer(scope, new HighlightTaskHandler());
+				server.execute();
+			} catch (RSBException | InterruptedException ex) {
+				LOG.log(Level.SEVERE, "Task server failed", ex);
+			}
+		});
+
 	}
 }

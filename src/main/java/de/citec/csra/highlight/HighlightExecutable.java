@@ -9,6 +9,7 @@ import de.citec.csra.allocation.cli.ExecutableResource;
 import static de.citec.csra.allocation.cli.ExecutableResource.Completion.RETAIN;
 import de.citec.csra.highlight.cfg.Highlightable;
 import java.util.concurrent.ExecutionException;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import rsb.RSBException;
 import static rst.communicationpatterns.ResourceAllocationType.ResourceAllocation.Initiator.HUMAN;
@@ -44,6 +45,7 @@ public class HighlightExecutable extends ExecutableResource {
 	@Override
 	public Object execute() throws InterruptedException, ExecutionException {
 		try {
+			LOG.log(Level.INFO, "remaining: {0} overhead: {1} duration: {2}", new Object[]{getRemote().getRemainingTime(), OVERHEAD, duration});
 			this.cfg.highlight(getRemote().getRemainingTime() - OVERHEAD);
 			return null;
 		} catch (Exception ex) {
