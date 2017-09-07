@@ -9,6 +9,7 @@ import de.citec.csra.allocation.cli.ExecutableResource;
 import static de.citec.csra.allocation.cli.ExecutableResource.Completion.RETAIN;
 import de.citec.csra.highlight.cfg.Highlightable;
 import java.util.concurrent.ExecutionException;
+import static java.util.concurrent.TimeUnit.MILLISECONDS;
 import java.util.logging.Logger;
 import rsb.RSBException;
 import static rst.communicationpatterns.ResourceAllocationType.ResourceAllocation.Initiator.HUMAN;
@@ -34,6 +35,7 @@ public class HighlightExecutable extends ExecutableResource {
 				HUMAN,
 				0,
 				duration + OVERHEAD,
+				MILLISECONDS,
 				RETAIN,
 				cfg.getInterfaces().stream().map(r -> "highlight:" + r).toArray(s -> new String[s]));
 //				cfg.getInterfaces().toArray(new String[cfg.getInterfaces().size()]));

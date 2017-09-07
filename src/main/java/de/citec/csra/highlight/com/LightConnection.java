@@ -6,14 +6,16 @@
 package de.citec.csra.highlight.com;
 
 import de.citec.csra.highlight.cfg.Configurable.Stage;
-import de.citec.csra.init.Remotes;
 import static de.citec.csra.rst.util.StringRepresentation.shortString;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
+import static java.util.concurrent.TimeUnit.MILLISECONDS;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.openbase.bco.dal.lib.layer.unit.ColorableLight;
-import org.openbase.bco.dal.remote.unit.DimmerRemote;
+import org.openbase.bco.dal.remote.unit.ColorableLightRemote;
+import org.openbase.bco.dal.remote.unit.DimmableLightRemote;
+import org.openbase.bco.dal.remote.unit.Units;
+import org.openbase.bco.registry.remote.Registries;
 import org.openbase.jul.exception.CouldNotPerformException;
 import org.openbase.jul.extension.rsb.scope.ScopeGenerator;
 import rsb.InitializeException;
@@ -22,6 +24,7 @@ import rst.domotic.state.PowerStateType.PowerState.State;
 import static rst.domotic.state.PowerStateType.PowerState.State.OFF;
 import static rst.domotic.state.PowerStateType.PowerState.State.ON;
 import rst.domotic.unit.UnitConfigType.UnitConfig;
+import static rst.domotic.unit.UnitTemplateType.UnitTemplate.UnitType.DIMMABLE_LIGHT;
 import rst.vision.HSBColorType.HSBColor;
 
 /**
@@ -43,12 +46,14 @@ public class LightConnection implements RemoteConnection<Stage> {
 	public LightConnection(String cfg, long timeout) throws InitializeException {
 		this.timeout = timeout;
 		try {
-			List<UnitConfig> units = Remotes.get().getUnitRegistry(timeout).getUnitConfigsByLabel(cfg);
+			Registries.getUnitRegistry().waitForData(timeout, MILLISECONDS);
+			List<UnitConfig> units = Registries.getUnitRegistry().getUnitConfigsByLabel(cfg);
 			loop:
 			for (UnitConfig u : units) {
 				switch (u.getType()) {
 					case COLORABLE_LIGHT:
-					case DIMMER:
+					case DIMMABLE_LIGHT:
+						System.out.println(u.getType());
 						this.unit = u;
 						break loop;
 					default:
@@ -56,9 +61,9 @@ public class LightConnection implements RemoteConnection<Stage> {
 				}
 			}
 			if (this.unit == null) {
-				throw new IllegalArgumentException("no light with label '" + cfg + "' available");
+				throw new IllegalArgumentException("no light with id '" + cfg + "' available");
 			}
-		} catch (InstantiationException | InterruptedException | CouldNotPerformException | IllegalArgumentException ex) {
+		} catch (InterruptedException | CouldNotPerformException | IllegalArgumentException ex) {
 			throw new InitializeException(ex);
 		}
 	}
@@ -68,7 +73,7 @@ public class LightConnection implements RemoteConnection<Stage> {
 
 		switch (unit.getType()) {
 			case COLORABLE_LIGHT:
-				ColorableLight light = Remotes.get().getColorableLight(unit, timeout);
+				ColorableLightRemote light = Units.getFutureUnit(unit, true, ColorableLightRemote.class).get(timeout, MILLISECONDS);
 				switch (argument) {
 					case INIT:
 						break;
@@ -93,8 +98,8 @@ public class LightConnection implements RemoteConnection<Stage> {
 						break;
 				}
 				break;
-			case DIMMER:
-				DimmerRemote dimmer = Remotes.get().getDimmableLight(unit, timeout);
+			case DIMMABLE_LIGHT:
+				DimmableLightRemote dimmer = Units.getFutureUnit(unit, true, DimmableLightRemote.class).get(timeout, MILLISECONDS);
 				switch (argument) {
 					case INIT:
 						break;
