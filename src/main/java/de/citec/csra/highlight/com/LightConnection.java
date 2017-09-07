@@ -53,7 +53,6 @@ public class LightConnection implements RemoteConnection<Stage> {
 				switch (u.getType()) {
 					case COLORABLE_LIGHT:
 					case DIMMABLE_LIGHT:
-						System.out.println(u.getType());
 						this.unit = u;
 						break loop;
 					default:
